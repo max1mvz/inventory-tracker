@@ -1,0 +1,55 @@
+.camera {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 48vh;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--panel-2);
+}
+
+.reader {
+  width: 100%;
+  height: 100%;
+}
+
+.reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+.viewport-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+}
+
+.controls .grow {
+  flex: 1;
+}
+
+.camera-error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+  font-size: 0.9rem;
+}

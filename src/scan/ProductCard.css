@@ -1,0 +1,224 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.card-banner {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--panel-2);
+  font-size: 0.85rem;
+}
+
+.card-banner.good {
+  background: rgba(74, 222, 128, 0.14);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  color: var(--good);
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-edit {
+  flex-shrink: 0;
+}
+
+.card-photo {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--panel-2);
+  background: var(--bg);
+}
+
+.card-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.card-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.card-meta code {
+  color: var(--text);
+}
+
+.dot {
+  opacity: 0.5;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--bg);
+  border: 1px solid var(--panel-2);
+}
+
+.qty.low {
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.qty-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.qty-unit {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.badge.muted {
+  background: var(--panel-2);
+  color: var(--muted);
+}
+
+.badge.danger {
+  background: rgba(248, 113, 113, 0.16);
+  color: var(--danger);
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn.big {
+  padding: 22px 16px;
+  font-family: var(--font-num);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.scan-next {
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+/* ---- custom / recount panels ---- */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--panel-2);
+}
+
+.panel-hint,
+.panel-actions .btn {
+  font-size: 0.9rem;
+}
+
+.panel-hint {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: var(--panel-2);
+  border-radius: 10px;
+}
+
+.seg-btn {
+  padding: 9px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.seg-btn.on {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.field input,
+.field select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-2);
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.recount-delta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.panel-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.panel-actions .grow {
+  flex: 1;
+}

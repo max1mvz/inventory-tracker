@@ -1,0 +1,125 @@
+.users {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.users-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.users-notice {
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.users-notice p {
+  margin: 4px 0;
+}
+
+.user-add {
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.user-add-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.user-add-row input,
+.user-add-row select {
+  flex: 1;
+  min-width: 140px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-2);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.user-add-row input:focus,
+.user-add-row select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.user-add-hint {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.users-flash {
+  margin: 0;
+  color: var(--good);
+  font-size: 0.9rem;
+}
+
+.user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+}
+
+.user-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.user-email {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-role {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--muted);
+}
+
+.user-role.owner {
+  background: rgba(56, 189, 248, 0.16);
+  color: var(--accent);
+}
+
+.user-role.admin {
+  background: rgba(74, 222, 128, 0.16);
+  color: var(--good);
+}
+
+.user-you {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+}

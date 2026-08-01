@@ -1,0 +1,141 @@
+.export-wrap {
+  position: relative;
+}
+
+.export-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  min-width: 180px;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px -14px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.export-menu button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.export-menu button:hover {
+  background: var(--panel-2);
+}
+
+/* The printable report is invisible on screen. */
+.stock-print-area {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Print: reveal only the report. `body *` is hidden and the report subtree is
+   un-hidden — a self-contained rule so it works whether or not another screen's
+   print CSS is also loaded.
+   --------------------------------------------------------------------------- */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .stock-print-area,
+  .stock-print-area * {
+    visibility: visible !important;
+  }
+
+  .stock-print-area {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000;
+  }
+
+  .sp-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid #000;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+
+  .sp-head h1 {
+    margin: 0;
+    font-size: 16pt;
+  }
+
+  .sp-meta {
+    font-size: 10pt;
+    color: #333;
+  }
+
+  .sp-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-size: 9.5pt;
+    margin-bottom: 10px;
+    color: #222;
+  }
+
+  .sp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 8.5pt;
+  }
+
+  .sp-table th,
+  .sp-table td {
+    border: 1px solid #bbb;
+    padding: 3px 5px;
+    text-align: left;
+  }
+
+  .sp-table thead th {
+    background: #eee !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sp-table thead {
+    display: table-header-group; /* repeat header on each printed page */
+  }
+
+  .sp-table .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sp-table .mono {
+    font-family: monospace;
+  }
+
+  .sp-table tr {
+    break-inside: avoid;
+  }
+
+  .sp-table tfoot td {
+    font-weight: 700;
+    border-top: 2px solid #000;
+  }
+}

@@ -1,0 +1,154 @@
+.create {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.create-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.create-tag {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.14);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.create-head h2 {
+  margin: 4px 0 0;
+  font-size: 1.2rem;
+}
+
+.create-barcode {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.create-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Inputs must never spill past their column inside the narrow drawer. */
+.create .field input,
+.create .field select {
+  width: 100%;
+  min-width: 0;
+}
+
+.field-hint {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* Barcode input + Generate button on one row in the manual create form. */
+.barcode-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.barcode-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.barcode-row .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ---- photo picker ---- */
+.image-field {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.image-preview {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--panel-2);
+  display: grid;
+  place-items: center;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-placeholder {
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.create-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.create-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.create-actions .grow {
+  flex: 1;
+}
+
+.delete-zone {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--panel-2);
+}
+
+.delete-zone .btn.danger {
+  width: 100%;
+}
+
+.delete-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.delete-confirm > span {
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-confirm-actions .btn {
+  flex: 1;
+}

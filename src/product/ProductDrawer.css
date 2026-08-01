@@ -1,0 +1,54 @@
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(2, 6, 23, 0.6);
+  display: flex;
+}
+
+.drawer-overlay.desktop {
+  justify-content: flex-end;
+}
+
+.drawer-panel {
+  background: var(--bg);
+  border-left: 1px solid var(--panel-2);
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-overlay.desktop .drawer-panel {
+  width: min(460px, 100%);
+  animation: drawer-slide 0.2s ease-out;
+}
+
+.drawer-overlay.mobile .drawer-panel {
+  width: 100%;
+  border-left: none;
+}
+
+@keyframes drawer-slide {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-start;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--panel-2);
+}
+
+.drawer-body {
+  padding: 16px;
+}

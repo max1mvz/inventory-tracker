@@ -1,0 +1,113 @@
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --bg: #0b0e1a;
+  --panel: #151830;
+  --panel-2: #2a2f4d;
+  --text: #eef0fa;
+  --muted: #9aa1c2;
+  --accent: #6366f1;
+  --accent-strong: #4f46e5;
+  --good: #34d399;
+  --danger: #f87171;
+  --on-accent: #ffffff;
+  --grad-accent: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --grad-accent-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(79, 70, 229, 0.13));
+  --grad-hero: linear-gradient(135deg, #4f46e5 0%, #4338ca 58%, #3730a3 100%);
+  --grad-sidebar: linear-gradient(180deg, #171a35 0%, #0b0e1a 90%);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --overlay: rgba(4, 6, 16, 0.62);
+  --font-num: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f4f5fb;
+  --panel: #ffffff;
+  --panel-2: #e5e7f2;
+  --text: #1a1d2e;
+  --muted: #626884;
+  --accent: #4f46e5;
+  --accent-strong: #4338ca;
+  --good: #10b981;
+  --danger: #dc2626;
+  --on-accent: #ffffff;
+  --grad-accent: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --grad-accent-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.08));
+  --grad-hero: linear-gradient(135deg, #4f46e5 0%, #4338ca 58%, #3730a3 100%);
+  --grad-sidebar: linear-gradient(180deg, #faf9ff 0%, #f1f0fb 100%);
+  --shadow: 0 1px 3px rgba(20, 20, 50, 0.08);
+  --overlay: rgba(30, 27, 65, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Shared button component, used across scanner, cards, forms, and auth. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--panel-2);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn.primary {
+  background: var(--grad-accent);
+  border-color: transparent;
+  color: var(--on-accent);
+}
+
+.btn.active {
+  background: #fde047;
+  border-color: #fde047;
+  color: #422006;
+}
+
+.btn.danger {
+  background: transparent;
+  border-color: rgba(248, 113, 113, 0.5);
+  color: var(--danger);
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+.btn.small {
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+

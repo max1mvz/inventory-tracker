@@ -1,0 +1,201 @@
+.stock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stock-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.stock-summary strong {
+  color: var(--text);
+}
+
+.low-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(248, 113, 113, 0.16);
+  color: var(--danger);
+}
+
+.stock-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.live.on {
+  color: var(--good);
+}
+
+.live.on .live-dot {
+  background: var(--good);
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+  animation: live-pulse 2s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+  }
+}
+
+.stock-search {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--panel-2);
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+
+.stock-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.stock-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stock-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--panel-2);
+  background: var(--panel);
+  color: var(--text);
+}
+
+.stock-row.low {
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.stock-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1; /* keeps the qty pinned right once a thumbnail is in the row */
+}
+
+.stock-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stock-sub {
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stock-row-qty {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.stock-qty {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.stock-unit {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.stock-row-qty .badge {
+  align-self: center;
+  margin-left: 4px;
+}
+
+.stock-empty {
+  text-align: center;
+  padding: 32px 0;
+}
+
+.stock-empty p {
+  margin: 4px 0;
+}
+
+.stock-empty .muted,
+.muted {
+  color: var(--muted);
+}
+
+/* ---- row thumbnails ---- */
+.stock-row .row-thumb {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  object-fit: cover;
+  border: 1px solid var(--panel-2);
+  background: var(--bg);
+}
+
+.stock-row .row-thumb.empty {
+  background: var(--grad-accent-soft);
+}
+
+/* ---- import / export toolbar (mobile) ---- */
+.stock-tools {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}

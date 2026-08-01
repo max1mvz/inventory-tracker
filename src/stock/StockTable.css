@@ -1,0 +1,127 @@
+.stock-table-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stock-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.add-product {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--panel-2);
+  border-radius: 14px;
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.stock-table th,
+.stock-table td {
+  padding: 12px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.stock-table th {
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--panel-2);
+}
+
+.stock-table th.num,
+.stock-table td.num {
+  text-align: right;
+}
+
+.stock-table td.num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+}
+
+.stock-table tbody tr {
+  border-top: 1px solid var(--panel-2);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.stock-table tbody tr:first-child {
+  border-top: none;
+}
+
+.stock-table tbody tr:hover {
+  background: var(--panel);
+}
+
+.stock-table tbody tr.low {
+  background: rgba(248, 113, 113, 0.06);
+}
+
+.stock-table td.strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stock-table td.num.strong {
+  font-size: 1rem;
+}
+
+.stock-table td.muted {
+  color: var(--muted);
+}
+
+.stock-table td.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+.stock-table .unit {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.sort-arrow {
+  color: var(--accent);
+}
+
+/* ---- row thumbnails ---- */
+.cell-product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.row-thumb {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  object-fit: cover;
+  border: 1px solid var(--panel-2);
+  background: var(--bg);
+}
+
+.row-thumb.empty {
+  background: var(--grad-accent-soft);
+}

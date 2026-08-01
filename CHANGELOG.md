@@ -1,0 +1,145 @@
+# Changelog
+
+The version shown in the app (account menu → *Version x.y.z*) matches the
+`version` field in `package.json`. Bump it there when shipping a change, add an
+entry here, then deploy with `npx vercel --prod`.
+
+## 1.8.0 — 2026-08-02
+
+### Added
+- **Auto-generated barcodes when adding a product manually.** The desktop
+  "+ Add product" form now pre-fills the barcode field with a valid internal
+  EAN-13 (200 prefix — the in-store / restricted-circulation range, so it never
+  collides with a real retail barcode), checked for uniqueness against the
+  catalog. A **Generate** button makes a fresh one on demand, and the field
+  stays fully editable — type or scan the product's real barcode over it if it
+  already has one. The scan flow is unchanged.
+
+## 1.7.0 — 2026-07-26
+
+### Added
+- **Bulk Excel/CSV import.** Upload a spreadsheet of products from the Stock tab
+  to create and update them in one go. Column headers are matched flexibly
+  (e.g. "QTY", "Unit Cost (₱)"), a preview shows exactly what will change
+  (new / update / stock Δ / skipped) before anything is written, and a
+  Quantity column sets each product's stock by appending a count movement — so
+  the append-only ledger is preserved. Includes a downloadable template.
+- **Stock export.** Download the current inventory as a formatted **Excel**
+  workbook (with totals) or a print-ready **PDF** report.
+- The spreadsheet engine (SheetJS) is code-split and loaded only when you
+  import or export, so it doesn't affect the app's normal load time.
+
+## 1.6.1 — 2026-07-26
+
+### Fixed
+- **Dashboard panels went blank** (Top 10 moving, Top Selling Products, By
+  reason, Recent activity, Movements today). 1.6.0 queried a `movements.source`
+  column that only exists after migration `0010`; because that migration hadn't
+  been run, every movement query failed and the dashboard treated it as being
+  offline. The queries no longer depend on it.
+
+### Removed
+- **Marketplace integration (Shopee / TikTok Shop) reverted** — on hold. The
+  webhook function, migration `0010`, SKU linking and channel badges are gone.
+  No database changes had been applied, so nothing needs undoing in Supabase.
+
+## 1.6.0 — 2026-07-26 *(withdrawn — see 1.6.1)*
+- Marketplace integration foundation. Reverted before it was ever enabled.
+
+## 1.5.0 — 2026-07-26
+
+### Added
+- **Assign a generated barcode to a product.** The studio now shows whether a
+  code actually resolves to a product ("Scans as …" / "Not assigned to any
+  product"), and can point the chosen product at a newly generated code in one
+  click. Previously a generated label printed fine but scanned to nothing,
+  because the code was never linked to anything.
+
+## 1.4.0 — 2026-07-26
+
+### Added
+- **Sheet preview.** The barcode preview now shows a scaled mock of the actual
+  page — paper proportions, margins, gaps, label size and count all derived from
+  the same geometry the printer uses, so changing paper, labels-per-row or the
+  number of copies is reflected immediately (including the leftover space at the
+  foot of the page).
+
+## 1.3.0 — 2026-07-26
+
+### Added
+- **Fill a whole page with labels.** The barcode studio now calculates how many
+  labels fit on A4 or Letter and fills one or more pages in a click. It also
+  reports the printed barcode's magnification and warns below 80%, where
+  scanners become unreliable — so a denser sheet never silently stops working.
+
+## 1.2.1 — 2026-07-26
+
+### Fixed
+- **Demo barcodes are now valid EAN-13.** The seeded catalogs used made-up
+  13-digit numbers whose final digit wasn't a real check digit, so they wouldn't
+  scan. Migration `0009` recomputes them in place; stock history is preserved by
+  switching the movements foreign key to `ON UPDATE CASCADE`.
+
+### Changed
+- Editing a product's barcode now works even when it has stock history — the
+  movements follow it instead of blocking the change (after migration `0009`).
+
+## 1.2.0 — 2026-07-26
+
+### Added
+- **Top 10 moving / Top 10 not moving** on the dashboard, over the last 30 days.
+  Idle stock is ranked by the money tied up in it, and counts the whole catalog
+  (not just products that moved), so dead stock actually surfaces.
+- **Barcode studio** — a new tab that generates scannable EAN-13 barcodes from a
+  product or any number, computes/corrects the check digit, previews the result,
+  and prints a sheet of labels (1–200 copies, 2–5 per row, optional price line
+  and cut guides). EAN-13 is encoded from the spec, so no new dependency.
+
+## 1.1.2 — 2026-07-26
+
+### Fixed
+- Activity header sat flush against the first row. The feed now has proper
+  vertical rhythm, with a divider separating the filters from the timeline.
+
+## 1.1.1 — 2026-07-26
+
+### Fixed
+- Activity filters (All / Stock / Catalog) wrapped onto two rows — the shared
+  segmented control was a fixed two-column grid; it now sizes to its contents.
+
+## 1.1.0 — 2026-07-26
+
+### Added
+- **Named audit trail.** Every stock movement and catalog change now shows *who*
+  did it, by name, instead of "You / Teammate".
+- **Catalog change log.** Product creates, edits (field-by-field, old → new),
+  and deletes are recorded by a database trigger — so the record is complete
+  regardless of where the change came from. Requires migration `0008`.
+- **Activity tab** became a full audit trail with All / Stock / Catalog filters.
+
+## 1.0.0 — 2026-07-26
+
+First versioned release. Everything below was already built; this is the point
+the app started tracking its own version.
+
+### Added
+- **Product photos.** Take or pick a photo when creating/editing a product.
+  Images are downscaled on the device (≤900px, WebP) before upload, stored in
+  Supabase Storage, and shown as lazy-loaded thumbnails in the stock list and
+  table. Requires migration `0007`.
+- **Update badge.** A new build now announces itself with an "Update available"
+  prompt instead of swapping in silently; the app checks on launch, hourly, and
+  whenever it returns to the foreground.
+- **Version display** in the account menu.
+- **App shortcuts** — long-press the installed icon to jump to Scan or Stock.
+
+### Changed
+- Service worker returned to a caching install (`prompt` mode) after the
+  temporary self-destroying build; product images are cached for offline use.
+
+### Earlier (unversioned)
+- Barcode scanning with a single-scan cooldown and success beep.
+- Append-only movement ledger with computed stock and realtime sync.
+- Offline queue (IndexedDB outbox) with automatic flush on reconnect.
+- Dashboard: inventory value in ₱, category and reason breakdowns, reorder list.
+- Product create/edit/delete, admin user management, light + dark themes.
