@@ -4,6 +4,18 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.9.0 — 2026-08-02
+
+### Changed
+- **Accessibility & design polish (no functional changes).** Every interactive
+  element now shows a visible keyboard focus ring (buttons, sidebar, tab bar,
+  account menu, and text fields), so the app is fully navigable by keyboard and
+  screen reader. The app also respects the OS "reduce motion" setting globally.
+- Introduced a shared radius / spacing / elevation token scale (matched to the
+  existing look, so nothing shifts) to keep the UI consistent going forward, and
+  switched data tables to tabular figures so quantities and prices align in
+  columns.
+
 ## 1.8.0 — 2026-08-02
 
 ### Added
