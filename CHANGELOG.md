@@ -4,6 +4,23 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.11.0 — 2026-08-02
+
+### Added
+- **Expenses tab (owner/admin only).** A lightweight expense / VAT ledger for
+  tax bookkeeping — record date, vendor, TIN, net/VAT/total, and category, with
+  a this-month total + by-category summary and a searchable list. Separate from
+  inventory (an expense is never a stock movement). Manual entry for now; photo
+  auto-capture is a future phase.
+  - **Requires a database migration** (`supabase/migrations/…_expenses.sql`) and
+    optional sample data (`supabase/seed_expenses.sql`) — run them in the
+    Supabase SQL editor.
+
+### Changed
+- **Mobile navigation decluttered.** Overview and Activity are now desktop-only
+  (they're analysis/review views); mobile shows Scan · Stock · Barcodes ·
+  Expenses. Low-stock is still surfaced on mobile via the Stock list.
+
 ## 1.10.0 — 2026-08-02
 
 ### Changed
