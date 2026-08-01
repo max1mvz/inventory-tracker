@@ -5,13 +5,13 @@
   max-width: 900px;
 }
 
-/* ---- month summary ---- */
+/* Print-only report header (hidden on screen). */
+.exp-print-head {
+  display: none;
+}
+
+/* ---- total VAT headline ---- */
 .exp-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 32px;
-  align-items: center;
-  justify-content: space-between;
   background: var(--panel);
   border: 1px solid var(--panel-2);
   border-radius: var(--radius-lg);
@@ -29,12 +29,12 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--accent);
 }
 
 .exp-sum-total {
   font-family: var(--font-num);
-  font-size: 1.9rem;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
@@ -43,31 +43,6 @@
 .exp-sum-sub {
   font-size: 0.82rem;
   color: var(--muted);
-}
-
-.exp-sum-cats {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 4px 18px;
-  min-width: 200px;
-}
-
-.exp-sum-cats li {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  font-size: 0.82rem;
-}
-
-.exp-cat-name {
-  color: var(--muted);
-}
-
-.exp-cat-amt {
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
 }
 
 /* ---- entry form ---- */
@@ -81,8 +56,12 @@
 
 .exp-form h3,
 .exp-list-head h3 {
-  margin: 0 0 14px;
+  margin: 0;
   font-size: 1.05rem;
+}
+
+.exp-form h3 {
+  margin-bottom: 14px;
 }
 
 .exp-grid {
@@ -124,6 +103,17 @@
   border-color: var(--accent);
 }
 
+.exp-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+  transition: color 0.15s;
+}
+
+.exp-hint.warn {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 .exp-form-foot {
   display: flex;
   align-items: center;
@@ -142,23 +132,58 @@
   font-size: 0.85rem;
 }
 
-/* ---- ledger list ---- */
+/* ---- ledger, grouped by month ---- */
 .exp-list-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-bottom: 6px;
 }
 
-.exp-count {
-  font-size: 0.8rem;
-  color: var(--muted);
+.exp-print-btn {
+  gap: 7px;
 }
 
 .exp-empty {
   color: var(--muted);
   font-size: 0.9rem;
   padding: 8px 0;
+}
+
+.exp-group + .exp-group {
+  margin-top: 18px;
+}
+
+.exp-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0 8px;
+  border-bottom: 2px solid var(--panel-2);
+}
+
+.exp-group-month {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.exp-group-totals {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.exp-group-vat {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.exp-group-total {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .exp-items {
@@ -228,10 +253,37 @@
   flex-shrink: 0;
 }
 
-.exp-item-amt {
+/* VAT is the highlighted figure; total is the muted secondary line. */
+.exp-item-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.exp-item-vat {
   font-family: var(--font-num);
   font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.exp-item-vat small {
+  font-family: system-ui, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+.exp-item-total {
+  font-size: 0.76rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .exp-del {
@@ -263,5 +315,86 @@
   }
   .exp-form-foot .btn {
     width: 100%;
+  }
+}
+
+/* ============================================================
+   Print report — hide the app chrome and the entry form, show
+   just the grouped ledger with a title and the totals.
+   ============================================================ */
+@media print {
+  .sidebar,
+  .topbar,
+  .app-header,
+  .app-nav,
+  .drawer-overlay,
+  .exp-form,
+  .exp-summary,
+  .exp-del,
+  .exp-confirm,
+  .exp-list-head .btn {
+    display: none !important;
+  }
+
+  .app,
+  .app-main,
+  .shell,
+  .main-col,
+  .content,
+  .content-inner {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .expenses {
+    max-width: none;
+    gap: 0;
+  }
+
+  .exp-print-head {
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .exp-print-head h1 {
+    margin: 0 0 4px;
+    font-size: 18pt;
+  }
+
+  .exp-print-head p {
+    margin: 0;
+    font-size: 10pt;
+    color: #000;
+  }
+
+  .exp-list {
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+  }
+
+  .exp-list-head {
+    margin: 0;
+  }
+
+  .exp-item {
+    break-inside: avoid;
+  }
+
+  /* High-contrast, ink-friendly. */
+  * {
+    color: #000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  .exp-item-cat {
+    border: 1px solid #000;
   }
 }
