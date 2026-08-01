@@ -4,6 +4,19 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.12.0 — 2026-08-02
+
+### Changed
+- **Expenses tab is now VAT-first and report-ready:**
+  - A large **Total VAT collected** headline banner at the top.
+  - VAT is the highlighted figure on every row (total shown as a muted line).
+  - Expenses are grouped by **month/year** with per-month VAT + total subtotals;
+    each month collapses/expands with a click.
+  - **TIN** is strict numeric with automatic dashes (XXX-XXX-XXX-XXX) and a
+    "numbers only" notice.
+  - A **Print report** button produces a clean, chrome-free printable summary
+    (all months included, even collapsed ones).
+
 ## 1.11.0 — 2026-08-02
 
 ### Added
