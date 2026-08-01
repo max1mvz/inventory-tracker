@@ -4,6 +4,18 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.10.0 — 2026-08-02
+
+### Changed
+- **Sign-in screen redesign.** Added the app's cube logo, centered the brand
+  lockup, gave the card real elevation and a tighter width, and a subtle
+  on-brand background glow — a more polished first impression. Works in light
+  and dark.
+- **Dashboard KPIs** now sit in a balanced 3×2 grid on desktop instead of five
+  across with a lonely sixth tile.
+
+No functional changes.
+
 ## 1.9.0 — 2026-08-02
 
 ### Changed
