@@ -10,38 +10,57 @@
   display: none;
 }
 
-/* ---- total VAT headline ---- */
+/* ---- total VAT headline (the hero figure) ---- */
 .exp-summary {
-  background: var(--panel);
-  border: 1px solid var(--panel-2);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--grad-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
+  padding: 22px 26px;
+  box-shadow: var(--elev-1);
+}
+
+.exp-sum-icon {
+  flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-lg);
+  background: var(--grad-accent);
+  color: var(--on-accent);
+  box-shadow: 0 8px 20px -8px var(--accent);
 }
 
 .exp-sum-main {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+  min-width: 0;
 }
 
 .exp-sum-label {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   font-weight: 700;
   color: var(--accent);
 }
 
 .exp-sum-total {
   font-family: var(--font-num);
-  font-size: 2rem;
+  font-size: clamp(2.3rem, 5vw, 3.1rem);
+  line-height: 1.02;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
 
 .exp-sum-sub {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   color: var(--muted);
 }
 

@@ -154,8 +154,11 @@ export default function Expenses() {
 
       {/* Total VAT headline */}
       <section className="exp-summary">
+        <div className="exp-sum-icon">
+          <Icon name="receipt" size={30} />
+        </div>
         <div className="exp-sum-main">
-          <span className="exp-sum-label">Total VAT</span>
+          <span className="exp-sum-label">Total VAT collected — all records</span>
           <span className="exp-sum-total">{pesoExact(grand.vat)}</span>
           <span className="exp-sum-sub">
             from {grand.count} {grand.count === 1 ? 'expense' : 'expenses'} · {pesoExact(grand.total)} total spend
