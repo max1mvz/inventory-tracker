@@ -27,7 +27,7 @@ const NAV = [
   { id: 'scan', label: 'Scan', icon: 'scan', mobileOnly: true },
   { id: 'stock', label: 'Stock', icon: 'stock' },
   { id: 'barcodes', label: 'Barcodes', icon: 'barcode' },
-  { id: 'expenses', label: 'Expenses', icon: 'receipt' },
+  { id: 'expenses', label: 'Expenses', icon: 'receipt', adminOnly: true },
   { id: 'activity', label: 'Activity', icon: 'activity', desktopOnly: true },
   { id: 'users', label: 'Users', icon: 'users', adminOnly: true },
 ]
