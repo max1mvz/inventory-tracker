@@ -55,7 +55,7 @@
   line-height: 1.02;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--accent);
+  color: var(--text); /* black in light theme, white in dark */
   font-variant-numeric: tabular-nums;
 }
 
@@ -175,17 +175,57 @@
 }
 
 .exp-group-head {
+  width: 100%;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 0 8px;
+  padding: 10px 4px 8px;
+  border: none;
   border-bottom: 2px solid var(--panel-2);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.exp-group-head:hover {
+  background: var(--grad-accent-soft);
+}
+
+.exp-group-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.exp-chevron {
+  color: var(--muted);
+  transition: transform 0.18s ease;
+}
+
+.exp-group-head.collapsed .exp-chevron {
+  transform: rotate(-90deg);
 }
 
 .exp-group-month {
   font-weight: 700;
   font-size: 0.95rem;
+}
+
+.exp-group-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--panel-2);
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-variant-numeric: tabular-nums;
+}
+
+.exp-items.hidden {
+  display: none;
 }
 
 .exp-group-totals {
@@ -351,8 +391,15 @@
   .exp-summary,
   .exp-del,
   .exp-confirm,
+  .exp-chevron,
+  .exp-group-count,
   .exp-list-head .btn {
     display: none !important;
+  }
+
+  /* Collapsed months are only hidden on screen — the printed report is complete. */
+  .exp-items.hidden {
+    display: flex !important;
   }
 
   .app,

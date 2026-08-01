@@ -37,6 +37,14 @@ export default function Expenses() {
   const [loading, setLoading] = useState(true)
   const [loadErr, setLoadErr] = useState(null)
   const [confirmId, setConfirmId] = useState(null)
+  const [collapsed, setCollapsed] = useState(() => new Set()) // month keys hidden
+
+  const toggleGroup = (ym) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev)
+      next.has(ym) ? next.delete(ym) : next.add(ym)
+      return next
+    })
 
   // Entry form
   const [expenseDate, setExpenseDate] = useState(today())
@@ -276,16 +284,27 @@ export default function Expenses() {
         ) : rows.length === 0 ? (
           <p className="exp-empty">No expenses recorded yet. Add your first one above.</p>
         ) : (
-          groups.map((g) => (
+          groups.map((g) => {
+            const isCollapsed = collapsed.has(g.ym)
+            return (
             <div className="exp-group" key={g.ym}>
-              <div className="exp-group-head">
-                <span className="exp-group-month">{monthLabel(g.ym)}</span>
+              <button
+                className={`exp-group-head ${isCollapsed ? 'collapsed' : ''}`}
+                type="button"
+                onClick={() => toggleGroup(g.ym)}
+                aria-expanded={!isCollapsed}
+              >
+                <span className="exp-group-left">
+                  <Icon name="chevron-down" size={16} className="exp-chevron" />
+                  <span className="exp-group-month">{monthLabel(g.ym)}</span>
+                  <span className="exp-group-count">{g.rows.length}</span>
+                </span>
                 <span className="exp-group-totals">
                   <span className="exp-group-vat">{pesoExact(g.vat)} VAT</span>
                   <span className="exp-group-total">{pesoExact(g.total)} total</span>
                 </span>
-              </div>
-              <ul className="exp-items">
+              </button>
+              <ul className={`exp-items ${isCollapsed ? 'hidden' : ''}`}>
                 {g.rows.map((r) => (
                   <li key={r.id} className="exp-item">
                     <div className="exp-item-main">
@@ -330,7 +349,8 @@ export default function Expenses() {
                 ))}
               </ul>
             </div>
-          ))
+            )
+          })
         )}
       </section>
     </div>
