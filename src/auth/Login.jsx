@@ -106,6 +106,21 @@ export default function Login() {
   return (
     <div className="login">
       <form className="login-card" onSubmit={signIn}>
+        <div className="login-brand">
+          <svg viewBox="0 0 512 512" className="login-mark" aria-hidden="true">
+            <g
+              stroke="var(--accent)"
+              strokeWidth="34"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            >
+              <path d="M256 104 L392 176 L392 336 L256 408 L120 336 L120 176 Z" />
+              <path d="M120 176 L256 248 L392 176" />
+              <path d="M256 248 L256 408" />
+            </g>
+          </svg>
+        </div>
         <h2>Inventory Tracker</h2>
         <p className="login-sub">Sign in to your account.</p>
         <input

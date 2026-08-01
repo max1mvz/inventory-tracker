@@ -713,8 +713,9 @@
 
 /* ---- desktop layout ---- */
 @media (min-width: 1024px) {
+  /* Exactly 6 KPIs: 3×2 keeps rows balanced (auto-fit orphaned the 6th). */
   .stat-tiles {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
   }
   .dash-charts {
     grid-template-columns: 3fr 2fr;
