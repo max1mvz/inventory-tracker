@@ -145,6 +145,13 @@ const PATHS = {
       <line x1="12" y1="17" x2="12.01" y2="17" />
     </>
   ),
+  receipt: (
+    <>
+      <path d="M5 2v20l2.5-1.5L10 22l2-1.5L14 22l2.5-1.5L19 22V2l-2.5 1.5L14 2l-2 1.5L10 2 7.5 3.5 5 2z" />
+      <line x1="9" y1="8" x2="15" y2="8" />
+      <line x1="9" y1="12" x2="15" y2="12" />
+    </>
+  ),
 }
 
 export default function Icon({ name, size = 20, className, strokeWidth = 2 }) {

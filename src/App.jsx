@@ -5,6 +5,7 @@ import StockTable from './stock/StockTable.jsx'
 import ActivityFeed from './history/ActivityFeed.jsx'
 import Overview from './dashboard/Overview.jsx'
 import Users from './admin/Users.jsx'
+import Expenses from './expenses/Expenses.jsx'
 import BarcodeStudio from './barcode/BarcodeStudio.jsx'
 import Login from './auth/Login.jsx'
 import { useAuth } from './auth/AuthContext.jsx'
@@ -22,6 +23,7 @@ const NAV = [
   { id: 'scan', label: 'Scan', icon: 'scan', mobileOnly: true },
   { id: 'stock', label: 'Stock', icon: 'stock' },
   { id: 'barcodes', label: 'Barcodes', icon: 'barcode' },
+  { id: 'expenses', label: 'Expenses', icon: 'receipt' },
   { id: 'activity', label: 'Activity', icon: 'activity' },
   { id: 'users', label: 'Users', icon: 'users', adminOnly: true },
 ]
@@ -31,6 +33,7 @@ const TITLES = {
   scan: 'Scan',
   stock: 'Stock',
   barcodes: 'Barcode studio',
+  expenses: 'Expenses',
   activity: 'Activity',
   users: 'Users',
 }
@@ -71,6 +74,7 @@ function ViewContent({ view, isDesktop }) {
   if (view === 'scan') return <Scanner />
   if (view === 'stock') return isDesktop ? <StockTable /> : <StockList />
   if (view === 'barcodes') return <BarcodeStudio />
+  if (view === 'expenses') return <Expenses />
   if (view === 'users') return <Users />
   return <ActivityFeed />
 }

@@ -1,0 +1,267 @@
+.expenses {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 900px;
+}
+
+/* ---- month summary ---- */
+.exp-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}
+
+.exp-sum-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.exp-sum-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.exp-sum-total {
+  font-family: var(--font-num);
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.exp-sum-sub {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.exp-sum-cats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px 18px;
+  min-width: 200px;
+}
+
+.exp-sum-cats li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.82rem;
+}
+
+.exp-cat-name {
+  color: var(--muted);
+}
+
+.exp-cat-amt {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ---- entry form ---- */
+.exp-form,
+.exp-list {
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}
+
+.exp-form h3,
+.exp-list-head h3 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+}
+
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.exp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.exp-field-wide {
+  grid-column: 1 / -1;
+}
+
+.exp-field > span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.exp-field input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--panel-2);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.exp-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.exp-form-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.exp-form-foot .btn {
+  min-width: 140px;
+}
+
+.exp-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+/* ---- ledger list ---- */
+.exp-list-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.exp-count {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.exp-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 8px 0;
+}
+
+.exp-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.exp-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--panel-2);
+}
+
+.exp-item:first-child {
+  border-top: none;
+}
+
+.exp-item-main {
+  min-width: 0;
+}
+
+.exp-item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.exp-item-vendor {
+  font-weight: 600;
+}
+
+.exp-item-cat {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--grad-accent-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.exp-item-meta {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.exp-item-note {
+  margin-top: 3px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.exp-item-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.exp-item-amt {
+  font-family: var(--font-num);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.exp-del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  transition: color 0.15s, background 0.15s;
+}
+
+.exp-del:hover {
+  color: var(--danger);
+  background: var(--panel-2);
+}
+
+.exp-confirm {
+  display: flex;
+  gap: 6px;
+}
+
+@media (max-width: 560px) {
+  .exp-grid {
+    grid-template-columns: 1fr;
+  }
+  .exp-form-foot .btn {
+    width: 100%;
+  }
+}
