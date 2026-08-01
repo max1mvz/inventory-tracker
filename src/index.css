@@ -18,6 +18,7 @@
   --grad-sidebar: linear-gradient(180deg, #171a35 0%, #0b0e1a 90%);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   --overlay: rgba(4, 6, 16, 0.62);
+  --ring: #818cf8;
   --font-num: 'Space Grotesk', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
@@ -39,6 +40,7 @@
   --grad-sidebar: linear-gradient(180deg, #faf9ff 0%, #f1f0fb 100%);
   --shadow: 0 1px 3px rgba(20, 20, 50, 0.08);
   --overlay: rgba(30, 27, 65, 0.35);
+  --ring: #4f46e5;
 }
 
 * {
@@ -109,5 +111,41 @@ button {
   padding: 9px 12px;
   border-radius: 10px;
   font-size: 0.85rem;
+}
+
+/* ===== Keyboard focus =====
+   Every interactive element gets a visible focus ring for keyboard / screen-
+   reader users. :focus-visible keeps mouse clicks clean (no ring on tap/click)
+   while ensuring Tab navigation is always visible — a production a11y baseline
+   that was previously missing on buttons, nav, and links. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Rounded controls read better with the ring hugging their radius. */
+.btn:focus-visible,
+.btn.small:focus-visible {
+  outline-offset: 3px;
+}
+
+/* ===== Reduced motion =====
+   Respect the OS "reduce motion" setting everywhere: near-instant transitions,
+   no looping animations (e.g. the live sync-chip pulse), no smooth scroll. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
