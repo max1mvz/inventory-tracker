@@ -19,12 +19,16 @@ import UpdatePrompt from './ui/UpdatePrompt.jsx'
 import './App.css'
 
 const NAV = [
-  { id: 'overview', label: 'Overview', icon: 'overview' },
+  // Overview + Activity are desktop-only: they're analysis/review tasks (charts,
+  // audit feed) better suited to a big screen. Mobile keeps the operational
+  // actions (scan/stock/barcodes/expenses). Low-stock is still surfaced on
+  // mobile via the Stock list, and per-product history via product detail.
+  { id: 'overview', label: 'Overview', icon: 'overview', desktopOnly: true },
   { id: 'scan', label: 'Scan', icon: 'scan', mobileOnly: true },
   { id: 'stock', label: 'Stock', icon: 'stock' },
   { id: 'barcodes', label: 'Barcodes', icon: 'barcode' },
   { id: 'expenses', label: 'Expenses', icon: 'receipt' },
-  { id: 'activity', label: 'Activity', icon: 'activity' },
+  { id: 'activity', label: 'Activity', icon: 'activity', desktopOnly: true },
   { id: 'users', label: 'Users', icon: 'users', adminOnly: true },
 ]
 
@@ -87,12 +91,17 @@ export default function App() {
     const v = new URLSearchParams(window.location.search).get('view')
     return NAV.some((n) => n.id === v) ? v : null
   })
-  const rawView = picked ?? (isDesktop ? 'overview' : 'scan')
-  // Scan is mobile-only; if the view lands on it while on desktop, fall back.
-  const view = isDesktop && rawView === 'scan' ? 'overview' : rawView
   const navItems = NAV.filter(
-    (n) => (!n.adminOnly || isAdmin) && !(n.mobileOnly && isDesktop),
+    (n) =>
+      (!n.adminOnly || isAdmin) &&
+      !(n.mobileOnly && isDesktop) &&
+      !(n.desktopOnly && !isDesktop),
   )
+  const defaultView = isDesktop ? 'overview' : 'scan'
+  const rawView = picked ?? defaultView
+  // If the chosen view isn't available in this layout (e.g. a desktop-only view
+  // deep-linked on mobile, or Scan on desktop), fall back to the default.
+  const view = navItems.some((n) => n.id === rawView) ? rawView : defaultView
 
   if (loading) {
     return (
