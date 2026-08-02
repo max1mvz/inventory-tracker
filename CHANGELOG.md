@@ -4,6 +4,14 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.14.0 — 2026-08-03
+
+### Added
+- **Supplier location on expenses.** Address, Municipality / City, and Barangay
+  fields on the expense form, shown on each ledger row when present.
+  - **Requires a database migration** (`…_expense_location.sql`) that adds the
+    `address`, `municipality`, and `barangay` columns.
+
 ## 1.13.0 — 2026-08-02
 
 ### Added

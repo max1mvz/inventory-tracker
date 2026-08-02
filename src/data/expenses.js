@@ -36,6 +36,9 @@ export async function createExpense({
   totalAmount,
   category,
   note,
+  address,
+  municipality,
+  barangay,
   receiptPath,
 }) {
   const payload = {
@@ -48,8 +51,11 @@ export async function createExpense({
     category: category?.trim() || null,
     note: note?.trim() || null,
   }
-  // Only reference receipt_path when there's a photo, so adding a plain expense
-  // keeps working even before the expense-receipts migration adds the column.
+  // Only reference the newer columns when they have a value, so adding a plain
+  // expense keeps working even before the location / receipts migrations run.
+  if (address?.trim()) payload.address = address.trim()
+  if (municipality?.trim()) payload.municipality = municipality.trim()
+  if (barangay?.trim()) payload.barangay = barangay.trim()
   if (receiptPath) payload.receipt_path = receiptPath
   const { data, error } = await supabase.from('expenses').insert(payload).select().single()
   if (error) throw error

@@ -375,6 +375,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+.exp-item-loc {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 .exp-item-note {
   margin-top: 3px;
   font-size: 0.82rem;

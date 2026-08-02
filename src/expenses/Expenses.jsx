@@ -53,6 +53,9 @@ export default function Expenses() {
   const [vendor, setVendor] = useState('')
   const [tin, setTin] = useState('')
   const [tinNotice, setTinNotice] = useState(false)
+  const [address, setAddress] = useState('')
+  const [municipality, setMunicipality] = useState('')
+  const [barangay, setBarangay] = useState('')
   const [netAmount, setNetAmount] = useState('')
   const [vatAmount, setVatAmount] = useState('')
   const [totalAmount, setTotalAmount] = useState('')
@@ -119,13 +122,19 @@ export default function Expenses() {
     setFormErr(null)
     try {
       const receiptPath = receiptFile ? await uploadReceiptImage(receiptFile) : null
-      await createExpense({ expenseDate, vendor, tin, netAmount, vatAmount, totalAmount, category, note, receiptPath })
+      await createExpense({
+        expenseDate, vendor, tin, netAmount, vatAmount, totalAmount, category, note,
+        address, municipality, barangay, receiptPath,
+      })
       setVendor('')
       setTin('')
       setNetAmount('')
       setVatAmount('')
       setTotalAmount('')
       setNote('')
+      setAddress('')
+      setMunicipality('')
+      setBarangay('')
       clearReceipt()
       await load()
     } catch (e) {
@@ -366,6 +375,33 @@ export default function Expenses() {
               {tinNotice ? 'Numbers only' : 'Digits only — dashes added automatically'}
             </small>
           </label>
+          <label className="exp-field exp-field-wide">
+            <span>Address</span>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Street / building"
+            />
+          </label>
+          <label className="exp-field">
+            <span>Municipality / City</span>
+            <input
+              type="text"
+              value={municipality}
+              onChange={(e) => setMunicipality(e.target.value)}
+              placeholder="e.g. Quezon City"
+            />
+          </label>
+          <label className="exp-field">
+            <span>Barangay</span>
+            <input
+              type="text"
+              value={barangay}
+              onChange={(e) => setBarangay(e.target.value)}
+              placeholder="e.g. Barangay 123"
+            />
+          </label>
           <label className="exp-field">
             <span>Net (₱)</span>
             <input
@@ -475,6 +511,11 @@ export default function Expenses() {
                         {fmtDate(r.expense_date)}
                         {r.tin && <> · TIN {r.tin}</>}
                       </div>
+                      {(r.address || r.barangay || r.municipality) && (
+                        <div className="exp-item-loc">
+                          {[r.address, r.barangay, r.municipality].filter(Boolean).join(', ')}
+                        </div>
+                      )}
                       {r.note && <div className="exp-item-note">{r.note}</div>}
                       {r.receipt_path && (
                         <button
