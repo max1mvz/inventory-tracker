@@ -4,6 +4,19 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.15.0 — 2026-08-03
+
+### Added
+- **Auto-generated structured SKU on the Add Product form.** SKUs now follow
+  `CATEGORY-NAME-ATTRIBUTE-SEQUENCE` (e.g. `ELE-CAB-BLACK-001`), built from the
+  category code, a 3-letter code from the product name, a new optional
+  **Attribute** field (colour / colour+size, `STD` when blank), and a global
+  sequence number. The sequence uses an atomic Postgres counter, so two people
+  saving at once never collide. A live SKU preview shows on the form; the
+  barcode (EAN-13) stays the product's identity.
+  - **Requires a database migration** (`…_sku_counter.sql`) that adds the
+    `sku_counter` table and the `next_sku_seq()` function.
+
 ## 1.14.0 — 2026-08-03
 
 ### Added

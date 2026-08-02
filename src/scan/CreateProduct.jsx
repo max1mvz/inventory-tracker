@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { PRODUCT_CATEGORIES, lookupProduct } from '../data/inventory'
 import { randomEan13 } from '../barcode/ean13'
+import { skuPreview, generateSku } from '../data/sku'
 import ImageField from './ImageField.jsx'
 import './CreateProduct.css'
 
@@ -44,7 +45,8 @@ export default function CreateProduct({
   // generation from clobbering something they've started typing.
   const editedRef = useRef(false)
   const [name, setName] = useState('')
-  const [sku, setSku] = useState('')
+  const [attribute, setAttribute] = useState('')
+  const [skuBusy, setSkuBusy] = useState(false)
   const [category, setCategory] = useState('')
   const [unit, setUnit] = useState('pcs')
   const [reorderPoint, setReorderPoint] = useState('0')
@@ -80,13 +82,29 @@ export default function CreateProduct({
     setGenBusy(false)
   }
 
-  function submit(e) {
+  const sku = skuPreview({ category, name, attribute })
+
+  async function submit(e) {
     e.preventDefault()
     if (!valid) return
+    // Generate the structured SKU when a category is set. If the counter can't
+    // be reached (offline / migration not yet run) we save without an SKU
+    // rather than block the product.
+    let generatedSku = ''
+    if (category.trim()) {
+      setSkuBusy(true)
+      try {
+        generatedSku = await generateSku({ category, name, attribute })
+      } catch {
+        generatedSku = ''
+      } finally {
+        setSkuBusy(false)
+      }
+    }
     onCreate({
       barcode: barcode.trim(),
       name,
-      sku,
+      sku: generatedSku,
       category,
       unit,
       reorderPoint: parseInt(reorderPoint, 10) || 0,
@@ -174,12 +192,12 @@ export default function CreateProduct({
 
       <div className="create-row">
         <label className="field">
-          <span>SKU (optional)</span>
+          <span>Attribute (optional)</span>
           <input
             type="text"
-            value={sku}
-            onChange={(e) => setSku(e.target.value)}
-            placeholder="—"
+            value={attribute}
+            onChange={(e) => setAttribute(e.target.value)}
+            placeholder="e.g. Black, or Black L"
           />
         </label>
         <label className="field unit">
@@ -191,6 +209,21 @@ export default function CreateProduct({
             placeholder="pcs"
           />
         </label>
+      </div>
+
+      <div className="field">
+        <span>SKU (auto-generated)</span>
+        <div className="sku-preview">
+          {sku ? (
+            <code>{sku}</code>
+          ) : (
+            <span className="sku-empty">Add a name and category to generate an SKU</span>
+          )}
+        </div>
+        <small className="field-hint">
+          Category · Name · Attribute · sequence. The number is assigned on save;
+          attribute defaults to STD.
+        </small>
       </div>
 
       <div className="create-row">
@@ -235,11 +268,11 @@ export default function CreateProduct({
       {error && <p className="create-error">{error}</p>}
 
       <div className="create-actions">
-        <button className="btn ghost" type="button" onClick={onScanNext} disabled={busy}>
+        <button className="btn ghost" type="button" onClick={onScanNext} disabled={busy || skuBusy}>
           Cancel
         </button>
-        <button className="btn primary grow" type="submit" disabled={busy || !valid}>
-          {busy ? 'Creating…' : 'Create product'}
+        <button className="btn primary grow" type="submit" disabled={busy || skuBusy || !valid}>
+          {busy || skuBusy ? 'Creating…' : 'Create product'}
         </button>
       </div>
     </form>

@@ -54,6 +54,30 @@
   font-size: 0.75rem;
 }
 
+/* Auto-generated SKU readout on the create form. */
+.sku-preview {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--panel-2);
+  background: var(--bg);
+}
+
+.sku-preview code {
+  font-family: var(--font-num, monospace);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+
+.sku-empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 /* Barcode input + Generate button on one row in the manual create form. */
 .barcode-row {
   display: flex;
