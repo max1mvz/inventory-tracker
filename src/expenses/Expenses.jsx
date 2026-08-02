@@ -3,11 +3,21 @@ import {
   listExpenses,
   createExpense,
   deleteExpense,
+  extractReceipt,
   EXPENSE_CATEGORIES,
 } from '../data/expenses'
+import { compressImage } from '../scan/productImage'
 import { pesoExact } from '../format'
 import Icon from '../ui/Icon.jsx'
 import './expenses.css'
+
+const blobToDataUrl = (blob) =>
+  new Promise((resolve, reject) => {
+    const r = new FileReader()
+    r.onload = () => resolve(r.result)
+    r.onerror = reject
+    r.readAsDataURL(blob)
+  })
 
 // Local calendar date as YYYY-MM-DD (not UTC — avoids rolling back a day in
 // PH's UTC+8 early hours).
@@ -58,7 +68,11 @@ export default function Expenses() {
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)
   const [formErr, setFormErr] = useState(null)
+  const [scanning, setScanning] = useState(false)
+  const [scanErr, setScanErr] = useState(null)
+  const [scanned, setScanned] = useState(false)
   const tinTimer = useRef(null)
+  const fileRef = useRef(null)
 
   async function load() {
     setLoading(true)
@@ -86,6 +100,36 @@ export default function Expenses() {
       setTinNotice(true)
       clearTimeout(tinTimer.current)
       tinTimer.current = setTimeout(() => setTinNotice(false), 1600)
+    }
+  }
+
+  // Scan a receipt photo → pre-fill the form. The image is compressed on-device,
+  // read once by the vision model, and discarded (never stored).
+  async function onReceiptFile(e) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // let the same file be picked again
+    if (!file) return
+    setScanning(true)
+    setScanErr(null)
+    setScanned(false)
+    try {
+      // Higher res than product photos so small print (TIN, totals) stays legible.
+      const { blob } = await compressImage(file, { maxDim: 1600, quality: 0.85 })
+      const dataUrl = await blobToDataUrl(blob)
+      const f = await extractReceipt(dataUrl)
+      // Only overwrite fields the model actually found; leave the rest as-is.
+      if (f.expense_date) setExpenseDate(f.expense_date)
+      if (f.vendor) setVendor(f.vendor)
+      if (f.tin) setTin(formatTin(f.tin))
+      if (f.net_amount != null) setNetAmount(String(f.net_amount))
+      if (f.vat_amount != null) setVatAmount(String(f.vat_amount))
+      if (f.total_amount != null) setTotalAmount(String(f.total_amount))
+      if (f.category) setCategory(f.category)
+      setScanned(true)
+    } catch (err) {
+      setScanErr(err.message || 'Could not read the receipt.')
+    } finally {
+      setScanning(false)
     }
   }
 
@@ -253,6 +297,34 @@ export default function Expenses() {
       {/* Add expense */}
       <form className="exp-form" onSubmit={submit}>
         <h3>Record an expense</h3>
+
+        <div className="exp-scan">
+          <button
+            type="button"
+            className="btn exp-scan-btn"
+            onClick={() => fileRef.current?.click()}
+            disabled={scanning || busy}
+          >
+            <Icon name="scan" size={16} />
+            {scanning ? 'Reading receipt…' : 'Scan receipt to auto-fill'}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            onChange={onReceiptFile}
+          />
+          {scanErr ? (
+            <span className="exp-scan-note err">{scanErr}</span>
+          ) : scanned ? (
+            <span className="exp-scan-note ok">Filled from receipt — check the fields, then save.</span>
+          ) : (
+            <span className="exp-scan-note">Photo is read once and not stored.</span>
+          )}
+        </div>
+
         <div className="exp-grid">
           <label className="exp-field">
             <span>Date *</span>

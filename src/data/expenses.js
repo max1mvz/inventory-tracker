@@ -55,6 +55,32 @@ export async function deleteExpense(id) {
   if (error) throw error
 }
 
+/**
+ * Send a receipt image (data URL or base64) to the extract-receipt edge
+ * function and get back suggested fields. The image is read once and never
+ * stored. Returns { expense_date, vendor, tin, net_amount, vat_amount,
+ * total_amount, category } — any field may be null.
+ */
+export async function extractReceipt(image) {
+  const { data, error } = await supabase.functions.invoke('extract-receipt', { body: { image } })
+  if (error) {
+    let msg = error.message
+    try {
+      const ctx = await error.context?.json?.()
+      if (ctx?.error) msg = ctx.error
+    } catch {
+      /* ignore */
+    }
+    // The function isn't deployed yet.
+    if (/Failed to send|Function not found|404/i.test(msg)) {
+      throw new Error('Receipt scanning isn’t deployed yet. Deploy the extract-receipt function.')
+    }
+    throw new Error(msg)
+  }
+  if (data?.error) throw new Error(data.error)
+  return data.fields
+}
+
 // Suggested categories for the entry form (free text — type anything).
 export const EXPENSE_CATEGORIES = [
   'Utilities',

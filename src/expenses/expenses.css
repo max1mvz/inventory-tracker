@@ -83,6 +83,36 @@
   margin-bottom: 14px;
 }
 
+/* Scan-receipt row */
+.exp-scan {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--panel-2);
+}
+
+.exp-scan-btn {
+  gap: 8px;
+}
+
+.exp-scan-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.exp-scan-note.ok {
+  color: var(--good);
+  font-weight: 600;
+}
+
+.exp-scan-note.err {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 .exp-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
