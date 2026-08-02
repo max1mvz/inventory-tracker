@@ -148,6 +148,92 @@ export default function Expenses() {
 
   const generatedAt = new Date().toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' })
 
+  // Print a clean, self-contained report in a hidden iframe. This does NOT print
+  // the app window (whose height:100% / flex / sticky layout the browser's print
+  // engine clips to a blank page) — the iframe has its own minimal document, so
+  // the output is reliable regardless of the app's CSS.
+  function printReport() {
+    const esc = (s) =>
+      String(s ?? '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
+    const groupsHtml = groups
+      .map(
+        (g) => `
+      <section class="grp">
+        <div class="grp-head">
+          <span>${esc(monthLabel(g.ym))}</span>
+          <span>VAT ${esc(pesoExact(g.vat))} &nbsp;·&nbsp; Total ${esc(pesoExact(g.total))}</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Vendor</th><th>TIN</th><th>Category</th><th class="r">VAT</th><th class="r">Total</th></tr>
+          </thead>
+          <tbody>
+            ${g.rows
+              .map(
+                (r) => `<tr>
+              <td>${esc(fmtDate(r.expense_date))}</td>
+              <td>${esc(r.vendor || '')}</td>
+              <td>${esc(r.tin || '')}</td>
+              <td>${esc(r.category || '')}</td>
+              <td class="r">${esc(pesoExact(r.vat_amount || 0))}</td>
+              <td class="r">${esc(pesoExact(r.total_amount))}</td>
+            </tr>`,
+              )
+              .join('')}
+          </tbody>
+        </table>
+      </section>`,
+      )
+      .join('')
+
+    const doc = `<!doctype html><html><head><meta charset="utf-8"><title>Expense & VAT Report</title>
+    <style>
+      * { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: #000; box-sizing: border-box; }
+      @page { margin: 14mm; }
+      body { margin: 0; }
+      h1 { font-size: 20px; margin: 0 0 2px; }
+      .sub { font-size: 12px; color: #333; margin: 0 0 10px; }
+      .total { font-size: 24px; font-weight: 700; margin: 4px 0 20px; }
+      .grp { margin-bottom: 20px; }
+      .grp-head { display: flex; justify-content: space-between; align-items: baseline;
+        font-weight: 700; font-size: 13px; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 6px; }
+      table { width: 100%; border-collapse: collapse; font-size: 12px; }
+      th { text-align: left; border-bottom: 1px solid #000; padding: 5px 6px; font-size: 10px;
+        text-transform: uppercase; letter-spacing: 0.04em; }
+      td { padding: 5px 6px; border-bottom: 1px solid #ddd; vertical-align: top; }
+      .r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      tr { break-inside: avoid; }
+    </style></head>
+    <body>
+      <h1>Expense &amp; VAT Report</h1>
+      <p class="sub">${esc(String(grand.count))} expenses · Generated ${esc(generatedAt)}</p>
+      <div class="total">Total VAT collected: ${esc(pesoExact(grand.vat))}</div>
+      ${groupsHtml}
+    </body></html>`
+
+    const iframe = document.createElement('iframe')
+    Object.assign(iframe.style, {
+      position: 'fixed',
+      right: '0',
+      bottom: '0',
+      width: '0',
+      height: '0',
+      border: '0',
+    })
+    document.body.appendChild(iframe)
+    const idoc = iframe.contentWindow.document
+    idoc.open()
+    idoc.write(doc)
+    idoc.close()
+    const cleanup = () => setTimeout(() => iframe.remove(), 1000)
+    iframe.contentWindow.onafterprint = cleanup
+    setTimeout(() => {
+      iframe.contentWindow.focus()
+      iframe.contentWindow.print()
+      cleanup()
+    }, 300)
+  }
+
   return (
     <div className="expenses">
       {/* Total VAT headline */}
@@ -270,7 +356,7 @@ export default function Expenses() {
         <div className="exp-list-head">
           <h3>Expenses by month</h3>
           {rows.length > 0 && (
-            <button className="btn ghost small exp-print-btn" type="button" onClick={() => window.print()}>
+            <button className="btn ghost small exp-print-btn" type="button" onClick={printReport}>
               <Icon name="download" size={15} />
               Print report
             </button>
