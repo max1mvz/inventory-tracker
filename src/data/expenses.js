@@ -47,8 +47,10 @@ export async function createExpense({
     total_amount: Number(totalAmount) || 0,
     category: category?.trim() || null,
     note: note?.trim() || null,
-    receipt_path: receiptPath || null,
   }
+  // Only reference receipt_path when there's a photo, so adding a plain expense
+  // keeps working even before the expense-receipts migration adds the column.
+  if (receiptPath) payload.receipt_path = receiptPath
   const { data, error } = await supabase.from('expenses').insert(payload).select().single()
   if (error) throw error
   return data
