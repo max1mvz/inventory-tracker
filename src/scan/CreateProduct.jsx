@@ -211,20 +211,18 @@ export default function CreateProduct({
         </label>
       </div>
 
-      <div className="field">
-        <span>SKU (auto-generated)</span>
-        <div className="sku-preview">
-          {sku ? (
+      {sku && (
+        <div className="field">
+          <span>SKU (auto-generated)</span>
+          <div className="sku-preview">
             <code>{sku}</code>
-          ) : (
-            <span className="sku-empty">Add a name and category to generate an SKU</span>
-          )}
+          </div>
+          <small className="field-hint">
+            Category · Name · Attribute · sequence. The number is assigned on save;
+            attribute defaults to STD.
+          </small>
         </div>
-        <small className="field-hint">
-          Category · Name · Attribute · sequence. The number is assigned on save;
-          attribute defaults to STD.
-        </small>
-      </div>
+      )}
 
       <div className="create-row">
         <label className="field">

@@ -4,6 +4,12 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.15.1 — 2026-08-03
+
+### Changed
+- The auto-generated SKU now appears on the Add Product form **only after both
+  Name and Category are filled in** (the SKU section is hidden until then).
+
 ## 1.15.0 — 2026-08-03
 
 ### Added
