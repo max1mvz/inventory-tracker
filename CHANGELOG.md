@@ -4,6 +4,15 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.12.1 — 2026-08-02
+
+### Fixed
+- **Expense "Print report" produced a blank page.** The app's root elements are
+  `height: 100%` with a flex/sticky shell, which clipped the print output to one
+  empty page. Print now resets the root height/overflow, flattens the layout, and
+  renders the report in normal flow so it fills the page and paginates. Collapsed
+  months are included in full.
+
 ## 1.12.0 — 2026-08-02
 
 ### Changed

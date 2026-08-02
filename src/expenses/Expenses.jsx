@@ -150,16 +150,6 @@ export default function Expenses() {
 
   return (
     <div className="expenses">
-      {/* Print-only report header */}
-      <div className="exp-print-head">
-        <h1>Expense &amp; VAT Report</h1>
-        <p>
-          {grand.count} expenses · Total VAT {pesoExact(grand.vat)} · Total spend {pesoExact(grand.total)}
-          <br />
-          Generated {generatedAt}
-        </p>
-      </div>
-
       {/* Total VAT headline */}
       <section className="exp-summary">
         <div className="exp-sum-icon">
@@ -266,8 +256,17 @@ export default function Expenses() {
         </div>
       </form>
 
-      {/* Ledger grouped by month */}
-      <section className="exp-list">
+      {/* Printable report region: header + grouped ledger */}
+      <div className="exp-report">
+        <div className="exp-print-head">
+          <h1>Expense &amp; VAT Report</h1>
+          <p>
+            {grand.count} expenses · Total VAT {pesoExact(grand.vat)} · Total spend {pesoExact(grand.total)}
+            <br />
+            Generated {generatedAt}
+          </p>
+        </div>
+        <section className="exp-list">
         <div className="exp-list-head">
           <h3>Expenses by month</h3>
           {rows.length > 0 && (
@@ -352,7 +351,8 @@ export default function Expenses() {
             )
           })
         )}
-      </section>
+        </section>
+      </div>
     </div>
   )
 }
