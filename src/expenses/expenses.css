@@ -113,6 +113,52 @@
   font-weight: 600;
 }
 
+/* Attached-receipt preview */
+.exp-receipt-preview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.exp-receipt-preview img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--panel-2);
+  flex-shrink: 0;
+}
+
+.exp-receipt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exp-receipt-actions > div {
+  display: flex;
+  gap: 8px;
+}
+
+/* "View receipt" link on a ledger row */
+.exp-receipt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.exp-receipt-link:hover {
+  text-decoration: underline;
+}
+
 .exp-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

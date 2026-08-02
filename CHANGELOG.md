@@ -4,6 +4,17 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.13.0 — 2026-08-02
+
+### Added
+- **Attach a receipt photo to an expense.** "Add receipt photo" on the expense
+  form takes or picks a photo (compressed on-device), previews it, and saves it
+  with the record. Receipts live in a **private, owner/admin-only** storage
+  bucket (not public like product photos) and are viewed later via a short-lived
+  signed link ("View receipt" on each row). No AI — you fill the fields yourself.
+  - **Requires a database migration** (`…_expense_receipts.sql`) that adds
+    `receipt_path` and the private `expense-receipts` bucket.
+
 ## 1.12.2 — 2026-08-02
 
 ### Fixed

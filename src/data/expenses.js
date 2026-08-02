@@ -1,4 +1,7 @@
 import { supabase } from '../supabaseClient'
+import { compressImage } from '../scan/productImage'
+
+const RECEIPT_BUCKET = 'expense-receipts'
 
 /**
  * Expense / VAT records for tax bookkeeping. Separate from inventory — an
@@ -33,6 +36,7 @@ export async function createExpense({
   totalAmount,
   category,
   note,
+  receiptPath,
 }) {
   const payload = {
     expense_date: expenseDate,
@@ -43,6 +47,7 @@ export async function createExpense({
     total_amount: Number(totalAmount) || 0,
     category: category?.trim() || null,
     note: note?.trim() || null,
+    receipt_path: receiptPath || null,
   }
   const { data, error } = await supabase.from('expenses').insert(payload).select().single()
   if (error) throw error
@@ -56,29 +61,30 @@ export async function deleteExpense(id) {
 }
 
 /**
- * Send a receipt image (data URL or base64) to the extract-receipt edge
- * function and get back suggested fields. The image is read once and never
- * stored. Returns { expense_date, vendor, tin, net_amount, vat_amount,
- * total_amount, category } — any field may be null.
+ * Compress and upload a receipt photo to the private receipts bucket. Returns
+ * the storage PATH to save on the expense (view it later via getReceiptUrl).
  */
-export async function extractReceipt(image) {
-  const { data, error } = await supabase.functions.invoke('extract-receipt', { body: { image } })
+export async function uploadReceiptImage(file) {
+  const { blob, ext, type } = await compressImage(file, { maxDim: 1600, quality: 0.85 })
+  const path = `${new Date().getFullYear()}/${Date.now()}.${ext}`
+  const { error } = await supabase.storage.from(RECEIPT_BUCKET).upload(path, blob, {
+    contentType: type,
+    upsert: false,
+  })
   if (error) {
-    let msg = error.message
-    try {
-      const ctx = await error.context?.json?.()
-      if (ctx?.error) msg = ctx.error
-    } catch {
-      /* ignore */
+    if (/bucket not found/i.test(error.message || '')) {
+      throw new Error('Receipt storage isn’t set up yet. Run the expense-receipts migration.')
     }
-    // The function isn't deployed yet.
-    if (/Failed to send|Function not found|404/i.test(msg)) {
-      throw new Error('Receipt scanning isn’t deployed yet. Deploy the extract-receipt function.')
-    }
-    throw new Error(msg)
+    throw error
   }
-  if (data?.error) throw new Error(data.error)
-  return data.fields
+  return path
+}
+
+/** A short-lived signed URL to view a private receipt image. */
+export async function getReceiptUrl(path) {
+  const { data, error } = await supabase.storage.from(RECEIPT_BUCKET).createSignedUrl(path, 120)
+  if (error) throw error
+  return data.signedUrl
 }
 
 // Suggested categories for the entry form (free text — type anything).
