@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { listStock, updateProduct } from '../data/inventory'
 import { peso } from '../format'
-import { isValidEan13, normalizeEan13, onlyDigits, randomEan13 } from './ean13'
+import { isValidEan13, normalizeEan13, onlyDigits } from './ean13'
 import { GAP_X, GAP_Y, PAGES_STYLE_ID, PAGE_MARGIN, PAPERS, sheetLayout } from './sheet'
 import BarcodeSVG from './BarcodeSVG.jsx'
+import BatchSheet from './BatchSheet.jsx'
 import './barcode.css'
 
 const PER_ROW = [2, 3, 4, 5, 6, 8]
@@ -14,6 +15,7 @@ const PER_ROW = [2, 3, 4, 5, 6, 8]
  * unless you print it.
  */
 export default function BarcodeStudio() {
+  const [mode, setMode] = useState('single') // 'single' | 'batch'
   const [products, setProducts] = useState([])
   const [input, setInput] = useState('')
   const [label, setLabel] = useState('')
@@ -112,6 +114,27 @@ export default function BarcodeStudio() {
 
   return (
     <section className="barcode-studio">
+      <div className="seg bc-tabs">
+        <button
+          type="button"
+          className={`seg-btn ${mode === 'single' ? 'on' : ''}`}
+          onClick={() => setMode('single')}
+        >
+          Single label
+        </button>
+        <button
+          type="button"
+          className={`seg-btn ${mode === 'batch' ? 'on' : ''}`}
+          onClick={() => setMode('batch')}
+        >
+          Batch sheet (21)
+        </button>
+      </div>
+
+      {mode === 'batch' ? (
+        <BatchSheet products={products} />
+      ) : (
+      <>
       <div className="bc-grid">
         {/* ---------- controls ---------- */}
         <div className="panel bc-controls">
@@ -155,24 +178,6 @@ export default function BarcodeStudio() {
               </small>
             )}
           </label>
-
-          <div className="bc-row">
-            <button
-              type="button"
-              className="btn small"
-              onClick={() => {
-                setInput(randomEan13('200'))
-                setAssignMsg(null)
-                setAssignErr(null)
-              }}
-            >
-              Generate new
-            </button>
-            <small className="field-hint">
-              Prefix 200–299 is reserved for in-store use, so it won’t clash with a
-              manufacturer’s code.
-            </small>
-          </div>
 
           {/* Whether this code actually resolves to a product when scanned. */}
           {ready && (
@@ -421,6 +426,8 @@ export default function BarcodeStudio() {
             ))}
           </div>
         </div>
+      )}
+      </>
       )}
     </section>
   )

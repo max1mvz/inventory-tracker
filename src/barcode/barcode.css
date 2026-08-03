@@ -11,6 +11,285 @@
   align-items: start;
 }
 
+/* ---- Single / Batch tab switch ---- */
+.bc-tabs {
+  display: inline-flex;
+  width: auto;
+  grid-template-columns: none;
+}
+
+.bc-tabs .seg-btn {
+  padding: 8px 18px;
+}
+
+/* ---------------------------------------------------------------------------
+   Batch sheet (21-up) builder
+   --------------------------------------------------------------------------- */
+.batch {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.batch-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--panel-2);
+}
+
+.batch-count {
+  font-size: 0.85rem;
+}
+
+.batch-count strong {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  color: var(--accent);
+  margin-right: 2px;
+}
+
+.batch-count-sub {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.batch-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.batch-fill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.batch-fill select {
+  max-width: 200px;
+}
+
+.batch-check {
+  margin: 0;
+}
+
+.batch-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .batch-grid {
+    grid-template-columns: 300px 1fr;
+  }
+}
+
+.batch-products {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.batch-search {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-2);
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+
+.batch-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.batch-hint {
+  margin: 0;
+}
+
+.batch-chip-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.batch-empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 8px 4px;
+}
+
+.batch-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-2);
+  background: var(--panel);
+  cursor: grab;
+}
+
+.batch-chip:active {
+  cursor: grabbing;
+}
+
+.batch-chip.sel {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--panel));
+}
+
+.batch-chip-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.batch-chip-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.batch-chip-code {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- the on-screen sheet ---- */
+.batch-sheet-panel {
+  min-width: 0;
+}
+
+.batch-sheet {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 2%;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2%;
+  background: #fff;
+  border: 1px solid var(--panel-2);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.6);
+  container-type: inline-size;
+}
+
+.batch-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2%;
+  min-width: 0;
+  padding: 3%;
+  border: 1px dashed #c9c9c9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.batch-slot.filled {
+  cursor: grab;
+  border-color: #9aa;
+  border-style: solid;
+}
+
+.batch-slot.filled:active {
+  cursor: grabbing;
+}
+
+.batch-slot-clear {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  line-height: 14px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.batch-slot-name {
+  max-width: 100%;
+  color: #000;
+  font-weight: 700;
+  font-size: 1.6cqw;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.batch-slot-bc {
+  width: auto;
+  height: auto;
+  max-width: 92%;
+  max-height: 60%;
+  display: block;
+}
+
+.batch-slot-price {
+  color: #000;
+  font-weight: 700;
+  font-size: 1.7cqw;
+}
+
+.batch-slot-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.batch-slot-plus {
+  color: #b7b7b7;
+  font-size: 4cqw;
+  line-height: 1;
+}
+
+.batch-slot-add select {
+  max-width: 100%;
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #222;
+}
+
 .bc-controls {
   display: flex;
   flex-direction: column;
@@ -305,5 +584,37 @@
     font-weight: 700;
     color: #000;
     margin-top: 1mm;
+  }
+
+  /* Batch sheet: 3 across, 7 down, filling one A4 page (297mm − 2×10mm margin =
+     277mm of printable height). Fixed rows keep every label in its physical
+     sticker position; empty slots hold their place but show no ink. The barcode
+     is height-capped so all 21 rows fit — width (not bar height) drives scan
+     reliability, and ~30mm keeps it at the 80% magnification floor. */
+  .label-sheet.batch-print {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    height: 277mm;
+    gap: 0;
+  }
+
+  .label-sheet.batch-print .label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5mm;
+    overflow: hidden;
+  }
+
+  .label-sheet.batch-print .label-bc {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 27mm;
+  }
+
+  .label.label-empty {
+    border-color: transparent;
   }
 }
