@@ -4,6 +4,37 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.16.0 — 2026-08-03
+
+### Added
+- **Confirm before adding an unrecognized barcode.** Scanning a barcode that
+  isn't in inventory now asks *"This barcode is not in the inventory list. Would
+  you like to add it as a new product?"* — **Yes** opens the Add Product form with
+  the barcode prefilled; **No** discards the scan and returns to scanning.
+- **Batch 21-up label sheet.** A new **Batch sheet (21)** tab in the Barcode
+  studio lays out a standard 3×7 A4 sticker sheet. Assign any product to any slot
+  by dragging it from the product list, clicking an empty slot to pick, filling
+  all remaining slots with one product, or auto-arranging a ticked
+  multi-selection. Move labels between slots, clear a slot, or clear the sheet.
+  Prints a mixed sheet with every slot fixed in place (empty slots print blank)
+  so each label lands on the right sticker.
+
+### Changed
+- Removed the per-code **Generate new** button from the Barcode studio — a
+  product's barcode is its identity, so ad-hoc generation there was misleading.
+
+### Fixed
+- **Deleted products no longer resurface when scanned.** A product deleted on
+  another device could still resolve from this device's local cache. Scans now
+  treat the server's "not found" as authoritative — evicting the stale cache row
+  and prompting to add the item as new — unless an offline-created record is still
+  queued to sync.
+- **Unknown barcodes no longer read as phantom empty products.** Fixed an
+  offline-cache wrapper that returned a truthy placeholder on a cache miss, which
+  had masked the "not found" result.
+- **Barcode digits now show on the sheet preview**, matching what prints on each
+  label.
+
 ## 1.15.1 — 2026-08-03
 
 ### Changed
