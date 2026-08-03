@@ -387,12 +387,9 @@ export default function BarcodeStudio() {
                   {Array.from({ length: labelsOnFirstPage }, (_, i) => (
                     <div className="bc-mini-label" key={i}>
                       {label && <span className="bc-mini-name">{label}</span>}
-                      <BarcodeSVG
-                        code={result.code}
-                        scale={2}
-                        showText={false}
-                        className="bc-mini-bc"
-                      />
+                      {/* Show the human-readable digits here too, so the sheet
+                          preview matches what actually prints on each label. */}
+                      <BarcodeSVG code={result.code} scale={2} className="bc-mini-bc" />
                       {showPrice && priceText && (
                         <span className="bc-mini-price">{priceText}</span>
                       )}
