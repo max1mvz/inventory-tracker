@@ -4,6 +4,26 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.17.0 — 2026-08-03
+
+### Added
+- **Tap a label to view it at scannable size.** Sheet-preview labels are shrunk
+  to fit the page mock and are too small to scan off the screen. Tapping the large
+  preview, any sheet-preview label, or a batch-sheet slot (⤢) now opens that one
+  label large enough to scan straight from the display. (Screen scanning is still
+  less reliable than paper — scan the printed label for a definitive test.)
+
+### Changed
+- **Labels encode a selected product's exact saved barcode**, never a check-digit
+  "corrected" variant. A corrected code could differ from the product's database
+  key, so scanning the sticker returned "Product not found". A product whose saved
+  barcode isn't a valid EAN-13 is now flagged by name with a one-click **Assign** fix.
+- The sheet preview is labelled as a scaled layout mock, steering you to scan the
+  printed sheet or the tap-to-zoom view rather than the tiny on-screen labels.
+- Renamed the batch tab from "Batch sheet (21)" to "Batch sheet".
+- Removed the "Show the price on each label" checkbox — the **Price line** field is
+  now the control: fill it to print a price, leave it blank to omit it.
+
 ## 1.16.0 — 2026-08-03
 
 ### Added

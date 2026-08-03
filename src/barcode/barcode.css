@@ -238,6 +238,22 @@
   cursor: pointer;
 }
 
+.batch-slot-zoom {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  line-height: 14px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 11px;
+  cursor: zoom-in;
+}
+
 .batch-slot-name {
   max-width: 100%;
   color: #000;
@@ -288,6 +304,78 @@
   border: 1px solid #ccc;
   background: #fff;
   color: #222;
+}
+
+/* ---- Real-size label view (scan straight from the screen) ---- */
+.label-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.label-zoom-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(94vw, 560px);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 28px 24px 20px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+}
+
+.label-zoom-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #eee;
+  color: #222;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.label-zoom-name {
+  color: #000;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.label-zoom-bc {
+  width: min(90vw, 520px);
+  height: auto;
+  display: block;
+}
+
+.label-zoom-price {
+  color: #000;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.label-zoom-hint {
+  margin: 0;
+  max-width: 42ch;
+  text-align: center;
+  color: #555;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
 .bc-controls {
@@ -422,6 +510,12 @@
   border-radius: 12px;
   border: 1px solid var(--panel-2);
   overflow-x: auto;
+  cursor: zoom-in;
+}
+
+.bc-single:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .bc-single svg {
@@ -482,6 +576,12 @@
   padding: 1.5%;
   border: 1px dashed #c9c9c9;
   overflow: hidden;
+  cursor: zoom-in;
+}
+
+.bc-mini-label:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 
 .bc-mini-bc {

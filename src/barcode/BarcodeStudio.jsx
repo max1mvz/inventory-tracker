@@ -5,6 +5,7 @@ import { isValidEan13, normalizeEan13, onlyDigits } from './ean13'
 import { GAP_X, GAP_Y, PAGES_STYLE_ID, PAGE_MARGIN, PAPERS, sheetLayout } from './sheet'
 import BarcodeSVG from './BarcodeSVG.jsx'
 import BatchSheet from './BatchSheet.jsx'
+import LabelZoom from './LabelZoom.jsx'
 import './barcode.css'
 
 const PER_ROW = [2, 3, 4, 5, 6, 8]
@@ -22,13 +23,16 @@ export default function BarcodeStudio() {
   const [priceText, setPriceText] = useState('')
   const [copies, setCopies] = useState(12)
   const [perRow, setPerRow] = useState(3)
-  const [showPrice, setShowPrice] = useState(true)
+  // Price shows on each label whenever the Price line is filled — the field
+  // itself is the control, so no separate on/off toggle is needed.
+  const showPrice = priceText.trim().length > 0
   const [paper, setPaper] = useState('a4')
   const [pages, setPages] = useState(1)
   const [pickedBarcode, setPickedBarcode] = useState('') // product chosen above
   const [assigning, setAssigning] = useState(false)
   const [assignMsg, setAssignMsg] = useState(null)
   const [assignErr, setAssignErr] = useState(null)
+  const [zoom, setZoom] = useState(null) // { code, name, price } | null — real-size view
 
   const loadProducts = useCallback(
     () => listStock().then(setProducts).catch(() => {}),
@@ -58,7 +62,22 @@ export default function BarcodeStudio() {
   }, [paper])
 
   const result = useMemo(() => normalizeEan13(input), [input])
-  const ready = Boolean(result.code)
+  const picked = products.find((p) => p.barcode === pickedBarcode) || null
+
+  // The exact code encoded on EVERY label. When a product is selected and still
+  // showing its own saved barcode, and that barcode is a valid EAN-13, encode it
+  // verbatim — never normalizeEan13's check-digit-"corrected" variant. That
+  // correction can change the digits (e.g. a saved code with a wrong check digit,
+  // or a 12-digit UPC), producing a sticker that encodes a DIFFERENT number than
+  // the product's database key; a perfect scan of it then misses ("Product not
+  // found"). The free-form generator (no product picked, or a picked product
+  // whose saved barcode isn't a valid EAN-13 and must be repaired via Assign
+  // first) still uses the normalized code.
+  const showingPickedBarcode =
+    Boolean(picked) && input.trim() === picked.barcode && isValidEan13(picked.barcode)
+  const printCode = showingPickedBarcode ? picked.barcode : result.code
+
+  const ready = Boolean(printCode)
   const totalPages = Math.max(1, Math.ceil(copies / layout.perPage))
   // Only the first page is drawn — enough to judge the layout without rendering
   // hundreds of SVGs.
@@ -75,10 +94,10 @@ export default function BarcodeStudio() {
     setAssignErr(null)
   }
 
-  // Which product (if any) this code currently belongs to. A printed label is
-  // only useful once a product actually carries the code.
-  const linkedTo = ready ? products.find((p) => p.barcode === result.code) : null
-  const picked = products.find((p) => p.barcode === pickedBarcode) || null
+  // Which product (if any) a scan of THIS label will actually resolve to — an
+  // exact match on the code we encode. A label is only useful once a product
+  // truly carries that code.
+  const linkedTo = ready ? products.find((p) => p.barcode === printCode) : null
   const canAssign = Boolean(ready && picked && !linkedTo)
 
   /** Point the chosen product at this barcode, so scanning it finds the product. */
@@ -101,6 +120,7 @@ export default function BarcodeStudio() {
       })
       await loadProducts()
       setPickedBarcode(result.code)
+      setInput(result.code) // keep the field on the product's new (valid) barcode
       setAssignMsg(`${picked.name} now uses this barcode — it will scan.`)
     } catch (e) {
       setAssignErr(e.message || 'Could not assign the barcode.')
@@ -127,7 +147,7 @@ export default function BarcodeStudio() {
           className={`seg-btn ${mode === 'batch' ? 'on' : ''}`}
           onClick={() => setMode('batch')}
         >
-          Batch sheet (21)
+          Batch sheet
         </button>
       </div>
 
@@ -189,8 +209,9 @@ export default function BarcodeStudio() {
               ) : (
                 <>
                   <span>
-                    Not assigned to any product — scanning this label won’t find
-                    anything yet.
+                    {picked
+                      ? `“${picked.name}” has a saved barcode that isn’t a scannable EAN-13, so this label won’t scan back to it yet.`
+                      : 'Not assigned to any product — scanning this label won’t find anything yet.'}
                   </span>
                   {canAssign ? (
                     <button
@@ -231,7 +252,6 @@ export default function BarcodeStudio() {
                 value={priceText}
                 onChange={(e) => setPriceText(e.target.value)}
                 placeholder="₱0"
-                disabled={!showPrice}
               />
             </label>
             <label className="field">
@@ -314,15 +334,6 @@ export default function BarcodeStudio() {
             </small>
           )}
 
-          <label className="bc-check">
-            <input
-              type="checkbox"
-              checked={showPrice}
-              onChange={(e) => setShowPrice(e.target.checked)}
-            />
-            <span>Show the price on each label</span>
-          </label>
-
           <button
             className="btn primary"
             disabled={!ready}
@@ -345,8 +356,22 @@ export default function BarcodeStudio() {
           </div>
           {ready ? (
             <>
-              <div className="bc-single">
-                <BarcodeSVG code={result.code} scale={3} />
+              <div
+                className="bc-single"
+                role="button"
+                tabIndex={0}
+                title="Tap to view at scannable size"
+                onClick={() =>
+                  setZoom({ code: printCode, name: label, price: showPrice ? priceText : '' })
+                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setZoom({ code: printCode, name: label, price: showPrice ? priceText : '' })
+                  }
+                }}
+              >
+                <BarcodeSVG code={printCode} scale={3} />
               </div>
               <p className="bc-preview-meta">
                 {label || 'No label text'}
@@ -362,6 +387,11 @@ export default function BarcodeStudio() {
                   Page 1 of {totalPages} · {PAPERS[paper].label}
                 </span>
               </div>
+              <p className="field-hint bc-sheet-note">
+                A scaled layout mock — the small on-screen labels are too tiny to
+                scan. <strong>Tap any label</strong> to open it at scannable size,
+                or scan the <strong>printed</strong> sheet.
+              </p>
               <div
                 className="bc-page"
                 style={{ aspectRatio: `${PAPERS[paper].w} / ${PAPERS[paper].h}` }}
@@ -385,11 +415,30 @@ export default function BarcodeStudio() {
                   }}
                 >
                   {Array.from({ length: labelsOnFirstPage }, (_, i) => (
-                    <div className="bc-mini-label" key={i}>
+                    <div
+                      className="bc-mini-label"
+                      key={i}
+                      role="button"
+                      tabIndex={0}
+                      title="Tap to view at scannable size"
+                      onClick={() =>
+                        setZoom({
+                          code: printCode,
+                          name: label,
+                          price: showPrice ? priceText : '',
+                        })
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setZoom({ code: printCode, name: label, price: showPrice ? priceText : '' })
+                        }
+                      }}
+                    >
                       {label && <span className="bc-mini-name">{label}</span>}
                       {/* Show the human-readable digits here too, so the sheet
                           preview matches what actually prints on each label. */}
-                      <BarcodeSVG code={result.code} scale={2} className="bc-mini-bc" />
+                      <BarcodeSVG code={printCode} scale={2} className="bc-mini-bc" />
                       {showPrice && priceText && (
                         <span className="bc-mini-price">{priceText}</span>
                       )}
@@ -417,12 +466,21 @@ export default function BarcodeStudio() {
             {Array.from({ length: copies }, (_, i) => (
               <div className="label" key={i}>
                 {label && <div className="label-name">{label}</div>}
-                <BarcodeSVG code={result.code} scale={2} className="label-bc" />
+                <BarcodeSVG code={printCode} scale={2} className="label-bc" />
                 {showPrice && priceText && <div className="label-price">{priceText}</div>}
               </div>
             ))}
           </div>
         </div>
+      )}
+
+      {zoom && (
+        <LabelZoom
+          code={zoom.code}
+          name={zoom.name}
+          price={zoom.price}
+          onClose={() => setZoom(null)}
+        />
       )}
       </>
       )}

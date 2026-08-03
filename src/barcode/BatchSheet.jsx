@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { peso } from '../format'
 import { PAGES_STYLE_ID } from './sheet'
 import BarcodeSVG from './BarcodeSVG.jsx'
+import LabelZoom from './LabelZoom.jsx'
 
 // A standard 21-up sticker sheet (Avery L7160 family): 3 columns × 7 rows on A4.
 // Slots stay in fixed positions so a printed label lands on the right sticker —
@@ -21,6 +22,7 @@ export default function BatchSheet({ products }) {
   const [selected, setSelected] = useState(() => new Set()) // barcodes ticked for auto-arrange
   const [fillWith, setFillWith] = useState('')
   const [showPrice, setShowPrice] = useState(true)
+  const [zoom, setZoom] = useState(null) // { code, name, price } | null — real-size view
   // Native drag payload — dataTransfer can't hold an object, so keep it in a ref.
   const dragFrom = useRef(null) // { type: 'list' | 'slot', product, index? }
 
@@ -255,6 +257,21 @@ export default function BatchSheet({ products }) {
                   <>
                     <button
                       type="button"
+                      className="batch-slot-zoom"
+                      onClick={() =>
+                        setZoom({
+                          code: product.barcode,
+                          name: product.name,
+                          price: showPrice && product.price ? peso(product.price) : '',
+                        })
+                      }
+                      aria-label="View at scannable size"
+                      title="View at scannable size"
+                    >
+                      ⤢
+                    </button>
+                    <button
+                      type="button"
                       className="batch-slot-clear"
                       onClick={() => clearSlot(i)}
                       aria-label="Clear slot"
@@ -319,6 +336,15 @@ export default function BatchSheet({ products }) {
             )}
           </div>
         </div>
+      )}
+
+      {zoom && (
+        <LabelZoom
+          code={zoom.code}
+          name={zoom.name}
+          price={zoom.price}
+          onClose={() => setZoom(null)}
+        />
       )}
     </div>
   )
