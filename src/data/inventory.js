@@ -1,5 +1,11 @@
 import { supabase } from '../supabaseClient'
-import { enqueue, isNetworkError, isOffline, pendingDeltaMap } from '../offline/sync'
+import {
+  enqueue,
+  isNetworkError,
+  isOffline,
+  pendingDeltaMap,
+  pendingProductBarcodes,
+} from '../offline/sync'
 import {
   productCacheGet,
   productCachePut,
@@ -75,9 +81,22 @@ export async function lookupProduct(barcode) {
         .eq('barcode', barcode)
         .maybeSingle()
       if (error) throw error
-      if (data) await productCachePut(cacheShape(data))
-      if (data) return data
-      // Not on server — but a queued create may exist only in the local cache.
+      if (data) {
+        await productCachePut(cacheShape(data))
+        return data
+      }
+      // The server authoritatively has no such product. The ONLY reason to
+      // still trust a local cache entry is an offline-created product whose
+      // insert is still queued in the outbox. Otherwise the product doesn't
+      // exist — deleted (possibly on another device, which never touched THIS
+      // device's cache) or never created. Evict any stale cache row so a
+      // deleted item can't resurface, and report "not found" so the scan flow
+      // offers to add it as a new product.
+      if (!(await pendingProductBarcodes()).has(barcode)) {
+        await productCacheDelete(barcode)
+        return null
+      }
+      // Queued create — fall through to serve it from the local cache.
     } catch (e) {
       if (!isNetworkError(e)) throw e
       // network error → fall through to cache

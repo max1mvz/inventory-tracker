@@ -70,6 +70,20 @@ export async function flushOutbox() {
   return { flushed, remaining: await outboxCount() }
 }
 
+// Barcodes with a queued 'product' create that hasn't synced yet. A server
+// "not found" for one of these is EXPECTED (the insert is still in the outbox),
+// so a lookup must keep trusting the local cache for it. A server "not found"
+// for any OTHER barcode means the product genuinely doesn't exist (deleted, or
+// never created) — the cache must not resurrect it.
+export async function pendingProductBarcodes() {
+  const items = await outboxAll()
+  const set = new Set()
+  for (const it of items) {
+    if (it.type === 'product' && it.payload?.barcode) set.add(it.payload.barcode)
+  }
+  return set
+}
+
 // Sum of queued movement deltas per barcode — used to show an optimistic
 // quantity while offline (cached server qty + unsynced local changes).
 export async function pendingDeltaMap() {
