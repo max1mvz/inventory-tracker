@@ -32,7 +32,20 @@ function tx(store, mode, fn) {
         const t = db.transaction(store, mode)
         const s = t.objectStore(store)
         const result = fn(s)
-        t.oncomplete = () => resolve(result?.__value ?? result)
+        // Read the value in `oncomplete` — AFTER the request's onsuccess has
+        // populated the holder. A reqValue() holder always carries a `__value`
+        // key, so return it even when it's undefined (a cache miss / empty get).
+        // The old `result?.__value ?? result` wrongly fell back to the holder
+        // OBJECT on a miss, so productCacheGet(unknown) resolved truthy and
+        // every unknown barcode looked like a phantom empty product. Anything
+        // that isn't a holder (e.g. the {__value: count} from putMany, or a
+        // bare value) passes through unchanged.
+        t.oncomplete = () =>
+          resolve(
+            result && typeof result === 'object' && '__value' in result
+              ? result.__value
+              : result,
+          )
         t.onerror = () => reject(t.error)
         t.onabort = () => reject(t.error)
       }),

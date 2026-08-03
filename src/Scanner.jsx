@@ -6,7 +6,11 @@ import { lookupProduct, createProduct, recordMovement } from './data/inventory'
 import './Scanner.css'
 
 // Workflow phases after the camera decodes a barcode:
-//   scanning → lookup → (found | notfound) → back to scanning on "Scan next"
+//   scanning → lookup → found                        → back to scanning
+//                    ↘ notfound → (Yes) create        → back to scanning
+//                              ↘ (No) discard barcode → back to scanning
+// `notfound` shows a confirm prompt; only "Yes" saves the barcode and opens the
+// Add Product form (`create`). "No" discards the scan and resumes scanning.
 export default function Scanner() {
   const cameraRef = useRef(null)
 
@@ -19,7 +23,11 @@ export default function Scanner() {
   const [justCreated, setJustCreated] = useState(false)
   const [manual, setManual] = useState('')
 
-  const showingResult = phase === 'found' || phase === 'notfound' || phase === 'error'
+  const showingResult =
+    phase === 'found' ||
+    phase === 'notfound' ||
+    phase === 'create' ||
+    phase === 'error'
 
   const onDecode = useCallback(async (raw) => {
     const code = String(raw).trim() // normalize — stray whitespace breaks the barcode FK
@@ -43,6 +51,14 @@ export default function Scanner() {
       setError(e.message || 'Lookup failed.')
       setPhase('error')
     }
+  }, [])
+
+  // Scenario 1 (Yes): keep the scanned barcode and open the Add Product form
+  // with it prefilled. Scenario 2 (No) is just scanNext — it clears `barcode`,
+  // discarding the scan, and resumes the camera.
+  const confirmAddNew = useCallback(() => {
+    setError(null)
+    setPhase('create')
   }, [])
 
   const scanNext = useCallback(() => {
@@ -167,6 +183,25 @@ export default function Scanner() {
       )}
 
       {phase === 'notfound' && (
+        <div className="new-item-prompt">
+          <span className="create-tag">Unrecognized barcode</span>
+          <code className="create-barcode">{barcode}</code>
+          <p className="new-item-question">
+            This barcode is not in the inventory list. Would you like to add it as
+            a new product?
+          </p>
+          <div className="new-item-actions">
+            <button className="btn ghost" onClick={scanNext}>
+              No
+            </button>
+            <button className="btn primary grow" onClick={confirmAddNew}>
+              Yes, add product
+            </button>
+          </div>
+        </div>
+      )}
+
+      {phase === 'create' && (
         <CreateProduct
           barcode={barcode}
           onCreate={onCreate}

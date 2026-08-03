@@ -74,3 +74,33 @@
   border-radius: 16px;
   padding: 18px;
 }
+
+.new-item-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.new-item-prompt .create-tag {
+  align-self: flex-start;
+}
+
+.new-item-prompt .create-barcode {
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.new-item-question {
+  margin: 4px 0 8px;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.new-item-actions {
+  display: flex;
+  gap: 10px;
+}
