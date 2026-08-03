@@ -1,0 +1,324 @@
+.bills {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- monthly due counter ---------- */
+.bills-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #000));
+  color: #fff;
+  box-shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.7);
+}
+
+.bills-summary-main {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.bills-summary-month {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.bills-summary-count {
+  font-size: 1.05rem;
+}
+
+.bills-summary-count strong {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.7rem;
+  margin-right: 4px;
+}
+
+.bills-summary-total {
+  margin-left: auto;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bills-summary-sub {
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+
+/* ---------- header ---------- */
+.bills-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bills-head h3 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* ---------- form ---------- */
+.bill-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+}
+
+.bill-form-head .create-tag {
+  align-self: flex-start;
+}
+
+.bill-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .bill-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.bill-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.bill-themes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bill-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  background: var(--card-grad);
+}
+
+.bill-swatch.on {
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--accent);
+}
+
+/* ---------- card grid ---------- */
+.bills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* Card colour themes — the gradient each card / swatch uses. */
+.bill-theme-slate {
+  --card-grad: linear-gradient(135deg, #334155, #0f172a);
+}
+.bill-theme-red {
+  --card-grad: linear-gradient(135deg, #dc2626, #7f1d1d);
+}
+.bill-theme-blue {
+  --card-grad: linear-gradient(135deg, #2563eb, #1e3a8a);
+}
+.bill-theme-green {
+  --card-grad: linear-gradient(135deg, #059669, #064e3b);
+}
+.bill-theme-orange {
+  --card-grad: linear-gradient(135deg, #ea580c, #7c2d12);
+}
+.bill-theme-violet {
+  --card-grad: linear-gradient(135deg, #7c3aed, #4c1d95);
+}
+.bill-theme-teal {
+  --card-grad: linear-gradient(135deg, #0d9488, #134e4a);
+}
+.bill-theme-gold {
+  --card-grad: linear-gradient(135deg, #d97706, #78350f);
+}
+
+.bill-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 190px;
+  padding: 16px 16px 12px;
+  border-radius: 16px;
+  color: #fff;
+  background: var(--card-grad, linear-gradient(135deg, #334155, #0f172a));
+  box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.75);
+  overflow: visible;
+}
+
+.bill-card.due-soon {
+  box-shadow: 0 0 0 2px var(--accent), 0 14px 34px -16px rgba(0, 0, 0, 0.8);
+}
+
+.bill-card.paused {
+  filter: grayscale(0.65);
+  opacity: 0.62;
+}
+
+.bill-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bill-card-issuer {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.bill-card-chip {
+  opacity: 0.9;
+}
+
+.bill-card-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.bill-card-ref {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  opacity: 0.85;
+  font-size: 0.85rem;
+}
+
+.bill-card-mid {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.bill-card-amount {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.bill-card-due {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.bill-card-due.soon {
+  background: rgba(255, 255, 255, 0.95);
+  color: #111;
+}
+
+.bill-card-foot {
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+.bill-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  flex-wrap: wrap;
+}
+
+.bill-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.bill-mini:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.bill-mini.danger {
+  background: rgba(239, 68, 68, 0.85);
+}
+
+.bill-confirm {
+  display: inline-flex;
+  gap: 6px;
+}
+
+/* calendar dropdown */
+.bill-cal {
+  position: relative;
+  margin-right: auto;
+}
+
+.bill-cal-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 210px;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-2);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.8);
+}
+
+.bill-cal-menu button,
+.bill-cal-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bill-cal-menu button:hover,
+.bill-cal-menu a:hover {
+  background: var(--panel-2);
+}
+
+.bills-note {
+  margin: 4px 2px 0;
+  line-height: 1.5;
+}

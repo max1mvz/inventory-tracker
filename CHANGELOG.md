@@ -4,6 +4,24 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.18.0 — 2026-08-04
+
+### Added
+- **Billing due reminders (Bills tab, owner/admin only).** Track recurring
+  monthly bills — credit cards, loans, e-wallets, subscriptions — as
+  credit-card-style cards (8 colour themes) showing issuer, a masked account
+  ref, amount, and a due chip. Each bill has a **recurring due day of month**
+  (29–31 clamps to a short month's last day).
+  - **Calendar integration** — per card, **Download .ics** (Outlook / Apple
+    Calendar) or **Add to Google Calendar**. Both create a monthly recurring
+    all-day event with a one-day-before alert, so the user's own calendar app
+    fires the reminder — no account linking or backend needed.
+  - **Monthly due counter** — a banner totalling the bills due this month
+    (count + amount) with an upcoming-vs-passed split.
+  - **Requires a database migration** (`…_bills.sql`, 0014) that adds the
+    `bills` table with owner/admin RLS. The tab degrades gracefully until it's
+    run.
+
 ## 1.17.0 — 2026-08-03
 
 ### Added
