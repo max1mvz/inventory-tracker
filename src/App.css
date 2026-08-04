@@ -321,20 +321,7 @@
 }
 
 .account-role {
-  margin-top: 2px;
-  font-size: 0.68rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  color: var(--muted);
-}
-
-.account-role.owner {
-  color: var(--accent);
-}
-
-.account-role.admin {
-  color: var(--good);
+  margin-top: 4px;
 }
 
 .account-signout {

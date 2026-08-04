@@ -192,3 +192,41 @@ table {
   font-variant-numeric: tabular-nums;
 }
 
+/* ===== Role colour-coding =====
+   One consistent scheme for every place a user's role is shown (Users list,
+   account menu): a tinted pill with a leading dot, so owner / admin / member
+   are identifiable at a glance. The tint is a translucent mix of the role
+   colour over the current surface, so it reads in both light and dark themes. */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--role-color, #64748b) 16%, transparent);
+  color: var(--role-color, #64748b);
+}
+
+.role-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--role-color, #64748b);
+}
+
+.role-owner {
+  --role-color: #d97706;
+} /* amber */
+.role-admin {
+  --role-color: #7c3aed;
+} /* violet */
+.role-member {
+  --role-color: #0d9488;
+} /* teal */
+

@@ -97,27 +97,6 @@
   white-space: nowrap;
 }
 
-.user-role {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--panel-2);
-  color: var(--muted);
-}
-
-.user-role.owner {
-  background: rgba(56, 189, 248, 0.16);
-  color: var(--accent);
-}
-
-.user-role.admin {
-  background: rgba(74, 222, 128, 0.16);
-  color: var(--good);
-}
-
 .user-you {
   font-size: 0.75rem;
   color: var(--muted);

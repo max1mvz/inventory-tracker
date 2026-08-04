@@ -4,6 +4,14 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.20.2 — 2026-08-04
+
+### Changed
+- **Role colour-coding.** User roles now render as a consistent tinted pill with
+  a leading colour dot — **owner = amber, admin = violet, member = teal** — used
+  identically in the Users list and the account menu, so a user's role is
+  identifiable at a glance. The tints adapt to both light and dark themes.
+
 ## 1.20.1 — 2026-08-04
 
 ### Changed

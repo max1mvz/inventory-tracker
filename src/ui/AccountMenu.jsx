@@ -31,7 +31,11 @@ export default function AccountMenu({ email, role, onSignOut, compact }) {
               <div className="account-name" title={email}>
                 {email}
               </div>
-              {role && <div className={`account-role ${role}`}>{role}</div>}
+              {role && (
+                <div className="account-role">
+                  <span className={`role-badge role-${role}`}>{role}</span>
+                </div>
+              )}
             </div>
           </div>
           <button className="account-signout" onClick={onSignOut}>

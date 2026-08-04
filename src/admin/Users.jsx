@@ -153,7 +153,7 @@ export default function Users() {
             <li key={u.id} className="user-row">
               <span className="user-main">
                 <span className="user-email">{u.email}</span>
-                <span className={`user-role ${u.role}`}>{u.role}</span>
+                <span className={`role-badge role-${u.role}`}>{u.role}</span>
               </span>
               {u.id === user?.id ? (
                 <span className="user-you">You</span>
