@@ -4,6 +4,19 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.19.0 — 2026-08-04
+
+### Added
+- **Batch sheet drafts.** The 21-up batch sheet now auto-saves your work in
+  progress and restores it when you return, so you can stop mid-process, go do
+  something else, and pick up where you left off. A "Draft saved" pill confirms
+  each save; returning shows a "Resumed your saved draft" banner with a **Start
+  fresh** option.
+  - Stored in the browser's **localStorage**, not Supabase — zero database
+    reads/writes/storage. Only the slot barcodes are kept (a few bytes); product
+    name/price are re-resolved from the live catalog on restore, so drafts never
+    hold stale data. Drafts are per-device/browser.
+
 ## 1.18.0 — 2026-08-04
 
 ### Added

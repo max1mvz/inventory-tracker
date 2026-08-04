@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { peso } from '../format'
 import { PAGES_STYLE_ID } from './sheet'
+import { loadBatchDraft, saveBatchDraft, clearBatchDraft } from './batchDraft'
 import BarcodeSVG from './BarcodeSVG.jsx'
 import LabelZoom from './LabelZoom.jsx'
 
@@ -23,8 +24,13 @@ export default function BatchSheet({ products }) {
   const [fillWith, setFillWith] = useState('')
   const [showPrice, setShowPrice] = useState(true)
   const [zoom, setZoom] = useState(null) // { code, name, price } | null — real-size view
+  const [savedAt, setSavedAt] = useState(null) // draft last-saved timestamp
+  const [restoredDraft, setRestoredDraft] = useState(false) // resumed a saved draft on open
   // Native drag payload — dataTransfer can't hold an object, so keep it in a ref.
   const dragFrom = useRef(null) // { type: 'list' | 'slot', product, index? }
+  // Gate auto-save until the saved draft has been restored, so the initial empty
+  // sheet can't overwrite it before it loads.
+  const restoredRef = useRef(false)
 
   // The 21-up sheet is always A4. @page can't read CSS variables, so write the
   // rule into the shared <style> element (same id the single studio uses).
@@ -38,6 +44,32 @@ export default function BatchSheet({ products }) {
     el.textContent = '@media print { @page { size: A4; margin: 10mm; } }'
     return () => el?.remove()
   }, [])
+
+  // Restore a saved draft once the catalog is available, mapping stored barcodes
+  // back to live product rows (a since-deleted product just leaves its slot
+  // empty). Runs once; after it, auto-save is unlocked.
+  useEffect(() => {
+    if (restoredRef.current) return
+    const draft = loadBatchDraft()
+    if (!draft) {
+      restoredRef.current = true // nothing to restore — allow auto-save of new work
+      return
+    }
+    if (products.length === 0) return // wait for products so barcodes can be mapped
+    const byCode = new Map(products.map((p) => [String(p.barcode), p]))
+    setSlots(draft.slots.map((bc) => (bc ? byCode.get(String(bc)) || null : null)))
+    if (typeof draft.showPrice === 'boolean') setShowPrice(draft.showPrice)
+    setSavedAt(draft.savedAt || null)
+    if (draft.slots.some(Boolean)) setRestoredDraft(true)
+    restoredRef.current = true
+  }, [products])
+
+  // Auto-save the working sheet to localStorage (never Supabase) whenever it
+  // changes — but only after the initial restore, so we don't clobber the draft.
+  useEffect(() => {
+    if (!restoredRef.current) return
+    setSavedAt(saveBatchDraft({ slots, showPrice }))
+  }, [slots, showPrice])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -133,10 +165,46 @@ export default function BatchSheet({ products }) {
 
   return (
     <div className="batch">
+      {restoredDraft && (
+        <div className="batch-resumed">
+          <span>
+            Resumed your saved draft — pick up where you left off.
+          </span>
+          <button
+            type="button"
+            className="btn ghost small"
+            onClick={() => {
+              clearAll()
+              clearBatchDraft()
+              setRestoredDraft(false)
+            }}
+          >
+            Start fresh
+          </button>
+          <button
+            type="button"
+            className="batch-resumed-x"
+            onClick={() => setRestoredDraft(false)}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="batch-toolbar">
         <div className="batch-count">
           <strong>{filledCount}</strong> of {SLOTS} slots filled
           {emptyCount > 0 && <span className="batch-count-sub">{emptyCount} empty</span>}
+          {savedAt && (
+            <span
+              className="batch-draft-saved"
+              title="Auto-saved on this device — resumes when you return"
+            >
+              ✓ Draft saved{' '}
+              {new Date(savedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+            </span>
+          )}
         </div>
         <div className="batch-actions">
           <div className="batch-fill">
