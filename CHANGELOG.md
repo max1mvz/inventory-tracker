@@ -4,6 +4,26 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.20.0 — 2026-08-04
+
+### Added
+- **Supplier management (Suppliers tab, owner/admin only, desktop only).** A
+  data-grid of suppliers — one supplied product per row — with the full field
+  set (contact, product/size/specs, qty per pack, VAT, payment & shipping
+  method, lead time, remarks) and Add / Edit / Delete / **View details**.
+  - **Auto supplier code** `SUP-001` (DB sequence + trigger), plus Email,
+    Address and Website fields.
+  - **Search, filters** (status / VAT / payment / shipping), **column sort**,
+    and **pagination** (10 / 25 / 50).
+  - **Active/Inactive** status (archive without deleting) and a **1–5 reliability
+    rating**. Plus a **Duplicate** row action.
+  - **CSV / Excel export & import** (with a downloadable template and header
+    matching).
+  - Hidden on mobile — the wide grid is a desktop view.
+  - **Requires a database migration** (`…_suppliers.sql`, 0015) that adds the
+    `suppliers` table (with the `SUP-00N` sequence/trigger) and owner/admin RLS.
+    The tab degrades gracefully until it's run.
+
 ## 1.19.0 — 2026-08-04
 
 ### Added

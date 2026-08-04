@@ -7,6 +7,7 @@ import Overview from './dashboard/Overview.jsx'
 import Users from './admin/Users.jsx'
 import Expenses from './expenses/Expenses.jsx'
 import Bills from './bills/Bills.jsx'
+import Suppliers from './suppliers/Suppliers.jsx'
 import BarcodeStudio from './barcode/BarcodeStudio.jsx'
 import Login from './auth/Login.jsx'
 import { useAuth } from './auth/AuthContext.jsx'
@@ -30,6 +31,7 @@ const NAV = [
   { id: 'barcodes', label: 'Barcodes', icon: 'barcode' },
   { id: 'expenses', label: 'Expenses', icon: 'receipt', adminOnly: true },
   { id: 'bills', label: 'Bills', icon: 'bell', adminOnly: true },
+  { id: 'suppliers', label: 'Suppliers', icon: 'truck', adminOnly: true, desktopOnly: true },
   { id: 'activity', label: 'Activity', icon: 'activity', desktopOnly: true },
   { id: 'users', label: 'Users', icon: 'users', adminOnly: true },
 ]
@@ -41,6 +43,7 @@ const TITLES = {
   barcodes: 'Barcode studio',
   expenses: 'Expenses',
   bills: 'Bills',
+  suppliers: 'Suppliers',
   activity: 'Activity',
   users: 'Users',
 }
@@ -83,6 +86,7 @@ function ViewContent({ view, isDesktop }) {
   if (view === 'barcodes') return <BarcodeStudio />
   if (view === 'expenses') return <Expenses />
   if (view === 'bills') return <Bills />
+  if (view === 'suppliers') return <Suppliers />
   if (view === 'users') return <Users />
   return <ActivityFeed />
 }
