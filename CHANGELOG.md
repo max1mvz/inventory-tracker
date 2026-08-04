@@ -4,6 +4,15 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.20.1 — 2026-08-04
+
+### Changed
+- **Redesigned the supplier "View details" modal.** An identity header (initials
+  avatar, name, code, with status and rating promoted to the top), fields grouped
+  into labeled sections (Contact · Product & terms · Remarks) instead of one flat
+  list, actionable phone (tap-to-dial), email (mailto) and website (external)
+  links, clearer label/value hierarchy, and a responsive one-column fallback.
+
 ## 1.20.0 — 2026-08-04
 
 ### Added

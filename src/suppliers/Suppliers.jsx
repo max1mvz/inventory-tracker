@@ -82,6 +82,42 @@ function Stars({ value, onChange, size = 15 }) {
   )
 }
 
+const initials = (name) =>
+  String(name || '')
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase() || '?'
+
+const telHref = (n) => `tel:${String(n).replace(/[^\d+]/g, '')}`
+const siteHref = (u) => (/^https?:\/\//i.test(u) ? u : `https://${u}`)
+
+// One label/value pair in the detail view. Renders an actionable link (phone /
+// email / website) when `href` is given, a muted em-dash when the value is empty.
+function DetailItem({ label, value, href, external, wide }) {
+  const empty = value == null || value === ''
+  return (
+    <div className={`sup-detail-item ${wide ? 'wide' : ''} ${empty ? 'is-empty' : ''}`}>
+      <span className="sup-detail-label">{label}</span>
+      {empty ? (
+        <span className="sup-detail-value muted">—</span>
+      ) : href ? (
+        <a
+          className="sup-detail-value link"
+          href={href}
+          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {value}
+        </a>
+      ) : (
+        <span className="sup-detail-value">{value}</span>
+      )}
+    </div>
+  )
+}
+
 const COLUMNS = [
   { key: 'code', label: 'Code' },
   { key: 'name', label: 'Supplier' },
@@ -633,54 +669,95 @@ export default function Suppliers() {
       {/* ---------- view details modal ---------- */}
       {view && (
         <div className="sup-modal" onClick={() => setView(null)}>
-          <div className="sup-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="sup-modal-head">
-              <h3>
-                {view.name}{' '}
-                <span className="sup-code-chip">{view.code}</span>
-              </h3>
-              <button type="button" className="sup-modal-x" onClick={() => setView(null)} aria-label="Close">
-                ×
-              </button>
-            </div>
-            <div className="sup-view-grid">
-              {[
-                ['Contact person', view.contact_person],
-                ['Contact number', view.contact_number],
-                ['Email', view.email],
-                ['Address', view.address],
-                ['Website', view.website],
-                ['Product', view.product_name],
-                ['Size / specs', view.size_specs],
-                ['Size per piece', view.size_per_piece],
-                ['Qty per pack', view.qty_per_pack],
-                ['VAT inclusive', vatLabel(view.vat_inclusive)],
-                ['Payment method', view.payment_method],
-                ['Shipping method', view.shipping_method],
-                ['Lead time', view.lead_time_days != null ? `${view.lead_time_days} days` : null],
-              ].map(([label, val]) => (
-                <div className="sup-view-item" key={label}>
-                  <span className="sup-view-label">{label}</span>
-                  <span className="sup-view-val">{val || '—'}</span>
+          <div className="sup-modal-card sup-detail" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="sup-modal-x" onClick={() => setView(null)} aria-label="Close">
+              ×
+            </button>
+
+            <header className="sup-detail-header">
+              <div className="sup-avatar" aria-hidden="true">
+                {initials(view.name)}
+              </div>
+              <div className="sup-detail-id">
+                <div className="sup-detail-name">
+                  <h3>{view.name}</h3>
+                  <span className="sup-code-chip">{view.code}</span>
                 </div>
-              ))}
-              <div className="sup-view-item">
-                <span className="sup-view-label">Rating</span>
-                <span className="sup-view-val">{view.rating ? <Stars value={view.rating} /> : '—'}</span>
+                <div className="sup-detail-meta">
+                  <span className={`sup-badge ${view.active === false ? 'off' : 'on'}`}>
+                    {view.active === false ? 'Inactive' : 'Active'}
+                  </span>
+                  {view.rating ? (
+                    <span className="sup-detail-rating">
+                      <Stars value={view.rating} />
+                      <em>{view.rating}/5</em>
+                    </span>
+                  ) : (
+                    <span className="sup-detail-unrated">Unrated</span>
+                  )}
+                </div>
               </div>
-              <div className="sup-view-item">
-                <span className="sup-view-label">Status</span>
-                <span className={`sup-badge ${view.active === false ? 'off' : 'on'}`}>
-                  {view.active === false ? 'Inactive' : 'Active'}
-                </span>
-              </div>
+            </header>
+
+            <div className="sup-detail-body">
+              <section className="sup-detail-section">
+                <h4 className="sup-detail-section-title">
+                  <Icon name="users" size={13} /> Contact
+                </h4>
+                <div className="sup-detail-grid">
+                  <DetailItem label="Contact person" value={view.contact_person} />
+                  <DetailItem
+                    label="Phone"
+                    value={view.contact_number}
+                    href={view.contact_number ? telHref(view.contact_number) : null}
+                  />
+                  <DetailItem
+                    label="Email"
+                    value={view.email}
+                    href={view.email ? `mailto:${view.email}` : null}
+                  />
+                  <DetailItem
+                    label="Website"
+                    value={view.website}
+                    href={view.website ? siteHref(view.website) : null}
+                    external
+                  />
+                  <DetailItem label="Address" value={view.address} wide />
+                </div>
+              </section>
+
+              <section className="sup-detail-section">
+                <h4 className="sup-detail-section-title">
+                  <Icon name="stock" size={13} /> Product &amp; terms
+                </h4>
+                <div className="sup-detail-grid">
+                  <DetailItem label="Product" value={view.product_name} />
+                  <DetailItem label="Size / specs" value={view.size_specs} />
+                  <DetailItem label="Size per piece" value={view.size_per_piece} />
+                  <DetailItem
+                    label="Qty per pack"
+                    value={view.qty_per_pack != null ? String(view.qty_per_pack) : null}
+                  />
+                  <DetailItem label="VAT inclusive" value={vatLabel(view.vat_inclusive)} />
+                  <DetailItem
+                    label="Lead time"
+                    value={view.lead_time_days != null ? `${view.lead_time_days} days` : null}
+                  />
+                  <DetailItem label="Payment method" value={view.payment_method} />
+                  <DetailItem label="Shipping method" value={view.shipping_method} />
+                </div>
+              </section>
+
+              {view.remarks && (
+                <section className="sup-detail-section">
+                  <h4 className="sup-detail-section-title">
+                    <Icon name="receipt" size={13} /> Remarks
+                  </h4>
+                  <p className="sup-detail-remarks">{view.remarks}</p>
+                </section>
+              )}
             </div>
-            {view.remarks && (
-              <div className="sup-view-remarks">
-                <span className="sup-view-label">Remarks</span>
-                <p>{view.remarks}</p>
-              </div>
-            )}
+
             <div className="sup-modal-actions">
               <button className="btn ghost" onClick={() => { setForm(fromRow(view)); setView(null) }}>
                 <Icon name="edit" size={15} /> Edit
