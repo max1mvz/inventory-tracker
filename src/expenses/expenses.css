@@ -445,6 +445,45 @@
   background: var(--panel-2);
 }
 
+/* Per-row Edit + Delete actions. */
+.exp-row-actions {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.exp-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  transition: color 0.15s, background 0.15s;
+}
+
+.exp-edit:hover,
+.exp-edit.on {
+  color: var(--accent);
+  background: var(--panel-2);
+}
+
+/* "Editing" chip on the form heading while editing an existing expense. */
+.exp-editing-tag {
+  margin-left: 10px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
 .exp-confirm {
   display: flex;
   gap: 6px;
@@ -512,6 +551,8 @@
   .exp-summary,
   .exp-form,
   .exp-del,
+  .exp-edit,
+  .exp-row-actions,
   .exp-confirm,
   .exp-chevron,
   .exp-group-count,

@@ -4,6 +4,14 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.20.3 — 2026-08-04
+
+### Added
+- **Edit expenses.** Each expense row now has an Edit action that loads it into
+  the record form (which becomes "Edit expense" with a Save changes / Cancel
+  footer). Editing can change any field and keep, replace, view, or remove the
+  attached receipt. Backed by a new `updateExpense` call; no migration needed.
+
 ## 1.20.2 — 2026-08-04
 
 ### Changed

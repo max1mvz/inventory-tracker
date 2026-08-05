@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   listExpenses,
   createExpense,
+  updateExpense,
   deleteExpense,
   uploadReceiptImage,
   getReceiptUrl,
@@ -65,8 +66,13 @@ export default function Expenses() {
   const [formErr, setFormErr] = useState(null)
   const [receiptFile, setReceiptFile] = useState(null)
   const [receiptPreview, setReceiptPreview] = useState(null)
+  // Edit mode: null = adding a new expense; otherwise the id being edited.
+  const [editingId, setEditingId] = useState(null)
+  const [existingReceiptPath, setExistingReceiptPath] = useState(null) // the row's saved receipt
+  const [receiptRemoved, setReceiptRemoved] = useState(false) // user cleared the saved receipt
   const tinTimer = useRef(null)
   const fileRef = useRef(null)
+  const formRef = useRef(null)
 
   async function load() {
     setLoading(true)
@@ -113,6 +119,54 @@ export default function Expenses() {
     setReceiptPreview(null)
   }
 
+  // Remove the receipt already saved on the expense being edited (takes effect on save).
+  function removeExistingReceipt() {
+    clearReceipt()
+    setReceiptRemoved(true)
+  }
+
+  // Reset the form back to "add a new expense" mode.
+  function resetForm() {
+    setEditingId(null)
+    setExpenseDate(today())
+    setVendor('')
+    setTin('')
+    setNetAmount('')
+    setVatAmount('')
+    setTotalAmount('')
+    setCategory('')
+    setNote('')
+    setAddress('')
+    setMunicipality('')
+    setBarangay('')
+    clearReceipt()
+    setExistingReceiptPath(null)
+    setReceiptRemoved(false)
+    setFormErr(null)
+  }
+
+  // Load an existing expense into the form for editing.
+  function startEdit(r) {
+    setEditingId(r.id)
+    setExpenseDate(r.expense_date || today())
+    setVendor(r.vendor || '')
+    setTin(r.tin || '')
+    setNetAmount(r.net_amount ?? '')
+    setVatAmount(r.vat_amount ?? '')
+    setTotalAmount(r.total_amount ?? '')
+    setCategory(r.category || '')
+    setNote(r.note || '')
+    setAddress(r.address || '')
+    setMunicipality(r.municipality || '')
+    setBarangay(r.barangay || '')
+    clearReceipt()
+    setExistingReceiptPath(r.receipt_path || null)
+    setReceiptRemoved(false)
+    setConfirmId(null)
+    setFormErr(null)
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
+  }
+
   const valid = Boolean(expenseDate) && Number(totalAmount) > 0
 
   async function submit(e) {
@@ -121,21 +175,21 @@ export default function Expenses() {
     setBusy(true)
     setFormErr(null)
     try {
-      const receiptPath = receiptFile ? await uploadReceiptImage(receiptFile) : null
-      await createExpense({
+      // Resolve the receipt path: a newly picked file uploads; otherwise keep the
+      // existing one (edit) unless the user removed it, or none (new expense).
+      let receiptPath
+      if (receiptFile) receiptPath = await uploadReceiptImage(receiptFile)
+      else if (editingId) receiptPath = receiptRemoved ? null : existingReceiptPath
+      else receiptPath = null
+
+      const fields = {
         expenseDate, vendor, tin, netAmount, vatAmount, totalAmount, category, note,
         address, municipality, barangay, receiptPath,
-      })
-      setVendor('')
-      setTin('')
-      setNetAmount('')
-      setVatAmount('')
-      setTotalAmount('')
-      setNote('')
-      setAddress('')
-      setMunicipality('')
-      setBarangay('')
-      clearReceipt()
+      }
+      if (editingId) await updateExpense(editingId, fields)
+      else await createExpense(fields)
+
+      resetForm()
       await load()
     } catch (e) {
       setFormErr(e.message || 'Could not save — check your connection.')
@@ -292,9 +346,12 @@ export default function Expenses() {
         </div>
       </section>
 
-      {/* Add expense */}
-      <form className="exp-form" onSubmit={submit}>
-        <h3>Record an expense</h3>
+      {/* Add / edit expense */}
+      <form className="exp-form" onSubmit={submit} ref={formRef}>
+        <h3>
+          {editingId ? 'Edit expense' : 'Record an expense'}
+          {editingId && <span className="exp-editing-tag">Editing</span>}
+        </h3>
 
         <div className="exp-scan">
           {receiptPreview ? (
@@ -310,6 +367,21 @@ export default function Expenses() {
                     Remove
                   </button>
                 </div>
+              </div>
+            </div>
+          ) : editingId && existingReceiptPath && !receiptRemoved ? (
+            <div className="exp-receipt-actions">
+              <span className="exp-scan-note ok">Receipt attached to this expense.</span>
+              <div>
+                <button type="button" className="btn ghost small" onClick={() => viewReceipt(existingReceiptPath)} disabled={busy}>
+                  View
+                </button>
+                <button type="button" className="btn ghost small" onClick={() => fileRef.current?.click()} disabled={busy}>
+                  Replace
+                </button>
+                <button type="button" className="btn ghost small" onClick={removeExistingReceipt} disabled={busy}>
+                  Remove
+                </button>
               </div>
             </div>
           ) : (
@@ -446,8 +518,13 @@ export default function Expenses() {
         </div>
         <div className="exp-form-foot">
           {formErr && <p className="exp-error">{formErr}</p>}
+          {editingId && (
+            <button className="btn ghost" type="button" onClick={resetForm} disabled={busy}>
+              Cancel
+            </button>
+          )}
           <button className="btn primary" type="submit" disabled={busy || !valid}>
-            {busy ? 'Saving…' : 'Add expense'}
+            {busy ? 'Saving…' : editingId ? 'Save changes' : 'Add expense'}
           </button>
         </div>
       </form>
@@ -544,14 +621,26 @@ export default function Expenses() {
                           </button>
                         </div>
                       ) : (
-                        <button
-                          className="exp-del"
-                          type="button"
-                          onClick={() => setConfirmId(r.id)}
-                          aria-label="Delete expense"
-                        >
-                          <Icon name="trash" size={16} />
-                        </button>
+                        <div className="exp-row-actions">
+                          <button
+                            className={`exp-edit ${editingId === r.id ? 'on' : ''}`}
+                            type="button"
+                            onClick={() => startEdit(r)}
+                            aria-label="Edit expense"
+                            title="Edit"
+                          >
+                            <Icon name="edit" size={15} />
+                          </button>
+                          <button
+                            className="exp-del"
+                            type="button"
+                            onClick={() => setConfirmId(r.id)}
+                            aria-label="Delete expense"
+                            title="Delete"
+                          >
+                            <Icon name="trash" size={16} />
+                          </button>
+                        </div>
                       )}
                     </div>
                   </li>

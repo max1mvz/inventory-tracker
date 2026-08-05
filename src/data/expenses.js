@@ -62,6 +62,45 @@ export async function createExpense({
   return data
 }
 
+/**
+ * Update an existing expense. Takes the same fields as createExpense; every
+ * column is written (empty → null) so editing can clear a field too. `receiptPath`
+ * is the final value the caller wants stored: a newly uploaded path, the existing
+ * path (unchanged), or null (removed).
+ */
+export async function updateExpense(id, {
+  expenseDate,
+  vendor,
+  tin,
+  netAmount,
+  vatAmount,
+  totalAmount,
+  category,
+  note,
+  address,
+  municipality,
+  barangay,
+  receiptPath,
+}) {
+  const patch = {
+    expense_date: expenseDate,
+    vendor: vendor?.trim() || null,
+    tin: tin?.trim() || null,
+    net_amount: numOrNull(netAmount),
+    vat_amount: numOrNull(vatAmount),
+    total_amount: Number(totalAmount) || 0,
+    category: category?.trim() || null,
+    note: note?.trim() || null,
+    address: address?.trim() || null,
+    municipality: municipality?.trim() || null,
+    barangay: barangay?.trim() || null,
+    receipt_path: receiptPath || null,
+  }
+  const { data, error } = await supabase.from('expenses').update(patch).eq('id', id).select().single()
+  if (error) throw error
+  return data
+}
+
 /** Delete an expense by id. */
 export async function deleteExpense(id) {
   const { error } = await supabase.from('expenses').delete().eq('id', id)
