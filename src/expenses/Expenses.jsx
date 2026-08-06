@@ -19,13 +19,15 @@ const today = () => {
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10)
 }
 
-// Strip to digits (max 12 = 9-digit TIN + 3-digit branch) and group with dashes:
-// "1234567890" → "123-456-789-0".
-const formatTin = (raw) =>
-  String(raw)
-    .replace(/\D/g, '')
-    .slice(0, 12)
-    .replace(/(\d{3})(?=\d)/g, '$1-')
+// Strip to digits (max 14 = 9-digit base TIN + up to a 5-digit branch code) and
+// group with dashes: the base is split into 3s and the branch is one trailing
+// group — "1234567890000" → "123-456-789-0000".
+const formatTin = (raw) => {
+  const d = String(raw).replace(/\D/g, '').slice(0, 14)
+  const base = d.slice(0, 9).replace(/(\d{3})(?=\d)/g, '$1-')
+  const branch = d.slice(9) // up to 5 digits
+  return branch ? `${base}-${branch}` : base
+}
 
 const monthLabel = (ym) =>
   new Date(ym + '-01T00:00:00').toLocaleDateString('en-PH', { month: 'long', year: 'numeric' })
@@ -439,8 +441,8 @@ export default function Expenses() {
               inputMode="numeric"
               value={tin}
               onChange={onTinChange}
-              placeholder="000-000-000-000"
-              maxLength={15}
+              placeholder="000-000-000-00000"
+              maxLength={17}
               aria-describedby="tin-hint"
             />
             <small id="tin-hint" className={`exp-hint ${tinNotice ? 'warn' : ''}`} aria-live="polite">

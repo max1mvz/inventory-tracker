@@ -4,6 +4,13 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.20.4 — 2026-08-04
+
+### Changed
+- **Expense TIN accepts a longer branch code.** The TIN field now allows up to a
+  5-digit branch code (9-digit base + up to 5 = 14 digits), formatted as
+  `123-456-789-00000`, up from the previous 3-digit branch cap.
+
 ## 1.20.3 — 2026-08-04
 
 ### Added
