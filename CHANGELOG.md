@@ -4,6 +4,18 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.21.0 — 2026-08-04
+
+### Added
+- **TIN-first expense entry with vendor auto-fill.** The TIN is now the first,
+  required, auto-focused field on the expense form. Once a full 9-digit TIN is
+  entered, the form auto-searches your existing records (in memory — no extra
+  database read) and, on a match, pulls the vendor name, address, municipality,
+  and barangay from the most recent record for that TIN. A "Found …" / "New TIN"
+  note shows the result; no match just lets you carry on and create a new record.
+  Auto-fill clears stale details when the TIN changes and never overwrites a
+  field you've edited by hand.
+
 ## 1.20.4 — 2026-08-04
 
 ### Changed

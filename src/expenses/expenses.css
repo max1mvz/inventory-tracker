@@ -209,6 +209,25 @@
   font-weight: 600;
 }
 
+/* TIN auto-search result under the TIN field. */
+.exp-tin-match {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.exp-tin-match.found {
+  color: var(--good);
+}
+
+.exp-tin-match.new {
+  color: var(--muted);
+  font-weight: 500;
+}
+
 .exp-form-foot {
   display: flex;
   align-items: center;

@@ -29,6 +29,9 @@ const formatTin = (raw) => {
   return branch ? `${base}-${branch}` : base
 }
 
+// The 9-digit base of a TIN identifies the vendor (the branch code is per-branch).
+const tinBase = (t) => String(t ?? '').replace(/\D/g, '').slice(0, 9)
+
 const monthLabel = (ym) =>
   new Date(ym + '-01T00:00:00').toLocaleDateString('en-PH', { month: 'long', year: 'numeric' })
 
@@ -72,6 +75,10 @@ export default function Expenses() {
   const [editingId, setEditingId] = useState(null)
   const [existingReceiptPath, setExistingReceiptPath] = useState(null) // the row's saved receipt
   const [receiptRemoved, setReceiptRemoved] = useState(false) // user cleared the saved receipt
+  // TIN auto-search: undefined = idle/too short, null = searched with no match,
+  // object = matched vendor pulled from a previous record.
+  const [tinMatch, setTinMatch] = useState(undefined)
+  const autoFilledRef = useRef(null) // snapshot of the last auto-filled fields, to tell auto vs. manual
   const tinTimer = useRef(null)
   const fileRef = useRef(null)
   const formRef = useRef(null)
@@ -91,6 +98,67 @@ export default function Expenses() {
     load()
     return () => clearTimeout(tinTimer.current)
   }, [])
+
+  // TIN-first auto-search. Once a full 9-digit TIN base is typed on a NEW expense,
+  // look it up among the records already loaded (no extra database read) and
+  // auto-fill the vendor + location from the most recent match. No match → the
+  // user simply carries on and creates a new record for that TIN. Skipped while
+  // editing an existing expense, so it never overwrites what's being edited.
+  useEffect(() => {
+    if (editingId) {
+      setTinMatch(undefined)
+      return
+    }
+    const base = tinBase(tin)
+    if (base.length < 9) {
+      setTinMatch(undefined)
+      return
+    }
+    const timer = setTimeout(() => {
+      // Only auto-modify the vendor/location fields when they haven't been touched
+      // by hand: either they still hold exactly what we last auto-filled, or (if
+      // we've never auto-filled) they're all still empty. This lets us refresh /
+      // clear stale auto-fill when the TIN changes without ever losing a manual edit.
+      const snap = autoFilledRef.current
+      const canAutoFill = snap
+        ? vendor === snap.vendor &&
+          address === snap.address &&
+          municipality === snap.municipality &&
+          barangay === snap.barangay
+        : !vendor && !address && !municipality && !barangay
+
+      const matches = rows.filter((r) => tinBase(r.tin) === base)
+      const best = matches.find((r) => r.vendor || r.address || r.municipality || r.barangay) || matches[0]
+
+      if (best) {
+        const filled = {
+          vendor: best.vendor || '',
+          address: best.address || '',
+          municipality: best.municipality || '',
+          barangay: best.barangay || '',
+        }
+        setTinMatch(filled)
+        if (canAutoFill) {
+          setVendor(filled.vendor)
+          setAddress(filled.address)
+          setMunicipality(filled.municipality)
+          setBarangay(filled.barangay)
+          autoFilledRef.current = filled
+        }
+      } else {
+        setTinMatch(null)
+        // No record for this TIN — wipe any stale auto-fill from a previous match.
+        if (canAutoFill && snap) {
+          setVendor('')
+          setAddress('')
+          setMunicipality('')
+          setBarangay('')
+          autoFilledRef.current = null
+        }
+      }
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [tin, rows, editingId, vendor, address, municipality, barangay])
 
   // TIN is numbers only — strip anything else, auto-insert dashes, and flash a
   // brief "numbers only" notice if the user typed a disallowed character.
@@ -144,6 +212,8 @@ export default function Expenses() {
     clearReceipt()
     setExistingReceiptPath(null)
     setReceiptRemoved(false)
+    setTinMatch(undefined)
+    autoFilledRef.current = null
     setFormErr(null)
   }
 
@@ -169,7 +239,7 @@ export default function Expenses() {
     setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0)
   }
 
-  const valid = Boolean(expenseDate) && Number(totalAmount) > 0
+  const valid = Boolean(expenseDate) && Number(totalAmount) > 0 && tin.trim().length > 0
 
   async function submit(e) {
     e.preventDefault()
@@ -411,6 +481,36 @@ export default function Expenses() {
         </div>
 
         <div className="exp-grid">
+          <label className="exp-field exp-field-wide">
+            <span>TIN *</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={tin}
+              onChange={onTinChange}
+              placeholder="000-000-000-00000 — enter first to auto-fill a known vendor"
+              maxLength={17}
+              autoFocus
+              required
+              aria-describedby="tin-hint"
+            />
+            <small id="tin-hint" className={`exp-hint ${tinNotice ? 'warn' : ''}`} aria-live="polite">
+              {tinNotice ? 'Numbers only' : 'Digits only — dashes added automatically'}
+            </small>
+            {!editingId &&
+              tinMatch !== undefined &&
+              (tinMatch ? (
+                <small className="exp-tin-match found" aria-live="polite">
+                  <Icon name="search" size={12} /> Found{' '}
+                  {tinMatch.vendor ? `“${tinMatch.vendor}”` : 'a previous record'} — vendor details
+                  filled in.
+                </small>
+              ) : (
+                <small className="exp-tin-match new" aria-live="polite">
+                  New TIN — no earlier record. Fill in the details to add it.
+                </small>
+              ))}
+          </label>
           <label className="exp-field">
             <span>Date *</span>
             <input type="date" value={expenseDate} onChange={(e) => setExpenseDate(e.target.value)} required />
@@ -433,21 +533,6 @@ export default function Expenses() {
           <label className="exp-field">
             <span>Vendor / supplier</span>
             <input type="text" value={vendor} onChange={(e) => setVendor(e.target.value)} placeholder="Business name" />
-          </label>
-          <label className="exp-field">
-            <span>TIN</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={tin}
-              onChange={onTinChange}
-              placeholder="000-000-000-00000"
-              maxLength={17}
-              aria-describedby="tin-hint"
-            />
-            <small id="tin-hint" className={`exp-hint ${tinNotice ? 'warn' : ''}`} aria-live="polite">
-              {tinNotice ? 'Numbers only' : 'Digits only — dashes added automatically'}
-            </small>
           </label>
           <label className="exp-field exp-field-wide">
             <span>Address</span>
