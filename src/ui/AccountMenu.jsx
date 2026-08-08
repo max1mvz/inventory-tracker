@@ -44,6 +44,7 @@ export default function AccountMenu({ email, role, onSignOut, compact }) {
           </button>
           <div className="account-version" title={`Built ${__BUILD_DATE__}`}>
             Version {__APP_VERSION__}
+            <span className="account-dev">Developed by: JL</span>
           </div>
         </div>
       )}

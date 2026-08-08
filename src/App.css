@@ -352,6 +352,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+.account-dev {
+  display: block;
+  margin-top: 2px;
+}
+
 .app-nav {
   display: flex;
   gap: 4px;

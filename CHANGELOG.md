@@ -4,6 +4,11 @@ The version shown in the app (account menu → *Version x.y.z*) matches the
 `version` field in `package.json`. Bump it there when shipping a change, add an
 entry here, then deploy with `npx vercel --prod`.
 
+## 1.21.1 — 2026-08-04
+
+### Changed
+- Added a "Developed by: JL" line beneath the version label in the account menu.
+
 ## 1.21.0 — 2026-08-04
 
 ### Added
